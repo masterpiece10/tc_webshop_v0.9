@@ -42,8 +42,8 @@ class Order(models.Model):
     shipping_address    = models.ForeignKey(Address, null=True, related_name='billing_address', blank=True, on_delete=models.SET_NULL)
     cart                = models.ForeignKey(Cart, on_delete=models.CASCADE)
     status              = models.CharField(max_length=120, default='created', choices=ORDER_STATUS_CHOICES)
-    shipping_total      = models.DecimalField(blank=True, null=True, decimal_places=2, max_digits=100, default=5.99)
-    total               = models.DecimalField(blank=True, null=True, decimal_places=2, max_digits=100, default=0.00)
+    shipping_total      = models.DecimalField(blank=True, null=True, decimal_places=2, max_digits=20, default=5.99)
+    total               = models.DecimalField(blank=True, null=True, decimal_places=2, max_digits=20, default=0.00)
     active              = models.BooleanField(default=True)
 
     def __str__(self):
