@@ -35,8 +35,8 @@ class CartManager(models.Manager):
 class Cart(models.Model):
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
     product = models.ManyToManyField(Product, blank=True)
-    subtotal = models.DecimalField(blank=True,null=True, decimal_places=2, max_digits=100, default=0.00)
-    total = models.DecimalField(blank=True, null=True, decimal_places=2, max_digits=100, default=0.00)
+    subtotal = models.DecimalField(blank=True,null=True, decimal_places=2, max_digits=20, default=0.00)
+    total = models.DecimalField(blank=True, null=True, decimal_places=2, max_digits=20, default=0.00)
     featured = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
     timestamp = models.DateTimeField(auto_now_add=True)
