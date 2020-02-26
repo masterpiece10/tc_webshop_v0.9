@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% load static %}
+
+{% block content %}
+
+    <div class="row">
+        <p class="text-center"> {{ content }} </p>
+            {% if form %}
+            <div class="row col-sm-6 col-12">
+                
+                <form action="" method="POST">{% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-dark">submit</button>
+                </form>
+            </div>
+            {% endif %}
+            <div class="text-center">
+                <div class="row">
+                    <div class="col-sm-12 col">
+                        <img src="{% static 'img/placeholder.png'%}" class="img-fluid" />
+                        <p>{{ content }}</p>
+
+                        <i class="fas fa-camera"></i> <!-- solid style -->
+                       
+                    </div>
+                </div>
+            
+            {% if request.user.is_authenticated %}
+                <div class="row">
+                    <div class="col-sm-12 col">
+                        <h1>Premium</h1>
+                        {{ premium_content}}
+                    </div>
+                </div>
+            {% endif %}
+    </div>
+</div>
+
+{% endblock  %}

@@ -1,0 +1,16 @@
+{% load static %}
+<div class="card" style="width: 18rem;">
+<a href="{{ instance.get_absolute_url }}">
+{% if instance.image %}
+    <img src="{{instance.image.url}}" class="card-img-top" alt="{{ instance.titel }}">
+{% else %}
+  <img src="{% static 'img/placeholder.png' %}" class="card-img-top" alt="{{ instance.titel }}">
+{% endif %}
+</a>
+  <div class="card-body">
+    <h5 class="card-title">{{ instance.titel }}</h5>
+    <p class="card-text">{{instance.description|truncatewords:20}}</p>
+    <a href="{{ instance.get_absolute_url }}" class="btn btn-dark">View</a>
+    {% include 'products/snipets/update_cart.html' with product=instance cart=cart %}
+  </div>
+</div>

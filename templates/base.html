@@ -1,0 +1,64 @@
+{% load static %}
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+     <title>Some BS or rather</title>
+     {% include 'base/css.html' %}
+  </head>
+  <body>
+
+  {% include 'base/navbar.html' with brand_name='TC eCommerce' %}
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-2 col-med-1 col-sm-0 d-none d-sm-block container-fluid" id="ad-div" style="position: fixed; bottom: 20%; left: 0;">
+          {% include 'ad/ad.html' %}
+        </div>
+        <div class="col-lg-2">
+        
+        </div>
+          <div class="col-lg-8 mr-auto ml-auto">
+            <div class="container">
+            <br/>
+              <br/>
+              <br/>
+            {% if messages %}
+                <div class="alert alert-success messages my-0 ">
+                    {% for message in messages %}
+                    <span {% if message.tags %}class="{{ message.tags }}"{% endif %}>
+                        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+                        {{ message }}
+                        <br/>
+                    </span>
+                    {% endfor %}
+                </div>
+              {% endif %}
+              
+              {% block content %}
+
+              {% endblock %}
+            </div>
+          </div>
+        <div class="col-lg-2">
+
+        </div>
+      </div>
+    </div>
+
+    
+    
+    {% include 'base/js.html' %}
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    
+    <script>
+    {% block java_script %}
+    {% endblock  %}
+    </script>
+    </body>
+</html>
