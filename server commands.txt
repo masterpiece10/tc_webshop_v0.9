@@ -1,0 +1,11 @@
+gunicorn_tc_webshop service
+
+systemctl status gunicorn_tc_webshop
+
+systemctl start gunicorn_tc_webshop
+
+systemctl stop gunicorn_tc_webshop
+
+
+gunicorn ecommerce.wsgi --name tc-webshop --workers 5 --user masterpiece10
+

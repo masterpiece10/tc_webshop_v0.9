@@ -28,7 +28,7 @@ from products.views import ProductDetailViewSlug
 from django.views.generic import TemplateView
 
 
-import debug_toolbar
+
 
 urlpatterns = [
     
