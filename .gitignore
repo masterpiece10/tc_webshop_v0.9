@@ -4,6 +4,7 @@ Pipfile
 Pipfile.lock
 .env
 .vscode/
+.gitignore
 JQuery/
 # Virtualenv related
 bin/
@@ -11,6 +12,7 @@ include/
 pip-selfcheck.json
 
 # Django related 
+ecommerce/settings.py
 # src/<yourproject>/settings/local.py
 # static-cdn/  # any collected static files 
 
