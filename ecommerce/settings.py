@@ -220,7 +220,7 @@ else:
 # Email settings
 #
 
-MANAGERS = (('shop@treasure-china.net', 'Michael'))
+MANAGERS = [('Michael', 'shop@treasure-china.net'),]
 
 ADMINS = MANAGERS
 
