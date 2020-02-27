@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
-import os
+import os 
 
 from decouple import config
 
@@ -57,13 +57,7 @@ INSTALLED_APPS = [
     
 ]
 
-if DEBUG==True:
-    INTERNAL_IPS = [
-        # ...
-        '127.0.0.1',
-        # ...
-    ]
-    INSTALLED_APPS = INSTALLED_APPS + ['debug_toolbar',]  # debug toolbar
+
 
 #
 # custom session setting
@@ -81,7 +75,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware', # debug
+    #'BrokenLinkEmailMiddleware',
 ]
 
 ROOT_URLCONF = 'ecommerce.urls'
@@ -220,3 +214,21 @@ else:
     SECURE_HSTS_SECONDS             = None
     SECURE_HSTS_INCLUDE_SUBDOMAINS  = False
     SECURE_FRAME_DENY               = False
+
+
+#
+# Email settings
+#
+
+MANAGERS = (('shop@treasure-china.net', 'Michael'))
+
+ADMINS = MANAGERS
+
+
+
+EMAIL_HOST=config('EMAIL_HOST')
+EMAIL_HOST_USER=config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD=config('EMAIL_HOST_PASSWORD')
+EMAIL_PORT=config('EMAIL_PORT')
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'TC eCommerce <shop@treasure-china.net>'
