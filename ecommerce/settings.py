@@ -173,7 +173,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # Login / Logout redirect
 #
 
-LOGOUT_REDIRECT_URL = '/accounts/login'
+LOGOUT_REDIRECT_URL = '/login'
 
 #
 # Stripe settings
@@ -218,11 +218,11 @@ else:
 
 #
 # Email settings
-#
+# 
 
 MANAGERS = [('Michael', 'shop@treasure-china.net'),]
 
-ADMINS = MANAGERS
+ADMINS = MANAGERS  
 
 
 
@@ -230,5 +230,12 @@ EMAIL_HOST=config('EMAIL_HOST')
 EMAIL_HOST_USER=config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD=config('EMAIL_HOST_PASSWORD')
 EMAIL_PORT=config('EMAIL_PORT')
-EMAIL_USE_TLS = True
+EMAIL_USE_TLS = False
 DEFAULT_FROM_EMAIL = 'TC eCommerce <shop@treasure-china.net>'
+
+#
+# Email activation settings need to be changed for production
+#
+
+BASE_URL = "127.0.0.1:8000"
+DEFAULT_ACTIVATION_DAYS = 7     # value in days for expire the activation link

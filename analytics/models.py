@@ -16,6 +16,23 @@ User = settings.AUTH_USER_MODEL
 FORCE_SESSION_TO_ONE = getattr(settings, 'FORCE_SESSION_TO_ONE', False)
 FORCE_INACTIVE_USER_ENDSESSION = getattr(settings, 'FORCE_INACTIVE_USER_ENDSESSION', False)
 
+class ObjectViewedQuerySet(models.query.QuerySet):
+    def by_model(self, model_class, model_queryset=False):
+        c_type = ContentType.objects.get_for_model(model_class)
+        qs = self.filter(content_type= c_type)
+        if model_queryset:
+            viewed_ids = [x.object_id for x in qs]
+            return model_class.objects.filter(pk__in=viewed_ids)
+        return qs
+
+class ObjectViewedManager(models.Manager):
+    def get_queryset(self):
+        return ObjectViewedQuerySet(self.model, using=self._db)
+    
+    def by_model(self, model_class, model_queryset=False):
+        return self.get_queryset().by_model(model_class, model_queryset=model_queryset)
+
+
 class ObjectViewed(models.Model):
     user            = models.ForeignKey(User,blank=True, null=True, on_delete=models.SET_NULL) # User instance
     ip_address      = models.CharField(max_length=220, blank=True, null=True)
@@ -23,7 +40,8 @@ class ObjectViewed(models.Model):
     object_id       = models.PositiveIntegerField() # User id, Product id, Order id
     content_object  = GenericForeignKey('content_type', 'object_id') # Product instance
     timestamp       = models.DateTimeField(auto_now_add=True)
-   
+
+    objects = ObjectViewedManager()
 
     def __str__(self):
         return "%s viewed on %s" %(self.content_object, self.timestamp)
@@ -95,7 +113,7 @@ if FORCE_SESSION_TO_ONE:
 def post_save_user_changed_receiver(sender, instance, created, *args, **kwargs):
     if not created:
         if instance.is_active == False:
-            qs = UserSession.objects.filter(user=instance.user, ended=False, active=False).exclude(id=instance.id)
+            qs = UserSession.objects.filter(user=instance, ended=False,  active=False).exclude(id=instance.id)
             for i in qs:
                 i.end_session()
 

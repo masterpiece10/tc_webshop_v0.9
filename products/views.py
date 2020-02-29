@@ -1,3 +1,5 @@
+
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView
 from django.shortcuts import render, get_object_or_404, Http404
 
@@ -22,15 +24,27 @@ class ProductFeaturedView(ObjectViewedMixin, DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(ProductFeaturedView, self).get_context_data(*args, **kwargs)
+
         return context
+
+class UserProductsHistoryView(LoginRequiredMixin, ListView):
+    template_name = "analytics/history.html"
+  
+    def get_context_data(self, *args, **kwargs):
+        context = super(UserProductsHistoryView, self).get_context_data(*args, **kwargs)
+        cart_obj, new_obj = Cart.objects.new_or_get(self.request)
+        context['cart'] = cart_obj
+        return context
+
+    def get_queryset(self, *args, **kwargs):
+        request = self.request
+        views = request.user.objectviewed_set.by_model(Product, model_queryset=False)
+        return views 
 
 class ProductsListView(ListView):
     queryset = Product.objects.all()
     template_name = "list.html"
 
-    # def get_context_data(self, *args, **kwargs):
-    #     context = super(ProductsListView, self).get_context_data(*args, **kwargs)
-    #     return context
     def get_context_data(self, *args, **kwargs):
         context = super(ProductsListView, self).get_context_data(*args, **kwargs)
         cart_obj, new_obj = Cart.objects.new_or_get(self.request)
@@ -59,7 +73,6 @@ class ProductDetailView(ObjectViewedMixin, DetailView):
 
         return instance
 
-
 class ProductDetailViewSlug(ObjectViewedMixin, DetailView):
     queryset = Product.objects.all()
     template_name = "detail.html"
@@ -69,7 +82,6 @@ class ProductDetailViewSlug(ObjectViewedMixin, DetailView):
         cart_obj, new_obj = Cart.objects.new_or_get(self.request)
         context['cart'] = cart_obj
         return context
-
 
     def get_object(self, *args, **kwargs):
         request = self.request
@@ -84,7 +96,4 @@ class ProductDetailViewSlug(ObjectViewedMixin, DetailView):
         except:
             return Http404("ahhhmm hmmmm")
 
-        
         return instance
-
-

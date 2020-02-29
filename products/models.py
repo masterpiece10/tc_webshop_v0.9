@@ -55,14 +55,15 @@ class ProductManager(models.Manager):
         return self.get_queryset().active().search(q)
 
 class Product(models.Model):
-    title = models.CharField(max_length=120)
-    slug = models.SlugField(blank=True, unique=True)
-    description = models.TextField()
-    price = models.DecimalField(decimal_places=2, max_digits=20, default=1.00)
-    image = models.ImageField(upload_to=upload_image_path, null=True, blank=True)
-    featured = models.BooleanField(default=False)
-    active = models.BooleanField(default=True)
-    timestamp = models.DateTimeField(auto_now_add=True)
+    title           = models.CharField(max_length=120)
+    slug            = models.SlugField(blank=True, unique=True)
+    description     = models.TextField()
+    price           = models.DecimalField(decimal_places=2, max_digits=20, default=1.00)
+    image           = models.ImageField(upload_to=upload_image_path, null=True, blank=True)
+    featured        = models.BooleanField(default=False)
+    active          = models.BooleanField(default=True)
+    timestamp       = models.DateTimeField(auto_now_add=True)
+    is_digital      = models.BooleanField(default=False)
 
     objects = ProductManager()
 

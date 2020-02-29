@@ -1,9 +1,10 @@
 {% url 'home' as home_url %}
 {% url 'products:products' as pro_url %}
 {% url 'contact' as contact_url %}
-{% url 'accounts:login' as login_url %}
+{% url 'login' as login_url %}
 {% url 'accounts:logout' as logout_url %}
 {% url 'accounts:register' as register_url %}
+{% url 'accounts:home' as accounts_home_url %}
 {% url 'carts:home' as cart_url %}
 {% load static %}
 
@@ -36,8 +37,9 @@
                 Account
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Account Home</a>
-                <a class="dropdown-item" href="{% url 'marketing-pref' %}">Marketing Email Subscription</a>
+                <a class="dropdown-item {% if request.path == accounts_home_url %}active{% endif %}" href="{% url 'accounts:home' %}">Account Home</a>
+                <a class="dropdown-item" href="{% url 'marketing-pref' %}">Preferences</a>
+                <a class="dropdown-item" href="{% url 'marketing-pref' %}">Billing</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="{{ logout_url }}">Logout</a>
                 </div>

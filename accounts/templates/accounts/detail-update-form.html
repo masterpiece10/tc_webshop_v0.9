@@ -9,8 +9,12 @@
         {% endif %}
     
 
-        {{ form|crispy }} 
+        {{ form|crispy }}
+        <p >Email</p> 
+        <input type='text' class='form-control' disabled="true" aria-disabled="true" value=' {{ request.user.email }}' /><span class="help-text">Cannot Change Email Address</span><br/>
+        <br/>
         <button type="submit" class="btn btn-dark">Save</button>
+        <a class="btn btn-danger" href='{% url 'change:password_change' %}'>Change Password</a>
     </form>
 </div>
 {% endblock  %}

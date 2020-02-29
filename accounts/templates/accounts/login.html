@@ -6,8 +6,9 @@
 <div class="container">
     <div class="row">
         <p class="text-center"> {{ content }} </p>
-            <div class="col-sm-6 col-12">
-                
+            <div class="col-sm-6 col-12 mx-auto">
+                <h1 class="text_center">Login</h1>
+                <hr/>
                 <form action="" method="POST">{% csrf_token %}
                     {{ form|crispy }}
                     <button type="submit" class="btn btn-dark">submit</button>

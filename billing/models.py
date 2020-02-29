@@ -10,7 +10,8 @@ import stripe
 
 stripe.api_key = settings.STRIPE_LIVE_SECRET_KEY
 
-# Create your models here.
+
+
 User = settings.AUTH_USER_MODEL
 class BillingProfileManager(models.Manager):
     def new_or_get(self, request):

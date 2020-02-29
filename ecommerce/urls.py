@@ -17,15 +17,18 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from django.contrib import admin
+from django.contrib.auth.views import LogoutView
 from django.urls import path, include
+from django.views.generic import TemplateView, RedirectView
 
 from .views import home_page, contact_page, about_page
 from billing.views import payment_method_createview, payment_method_view
 from carts.views import cart_detail_api_view
 from marketing.views import MarketingPreferenceUpdateView, MailchimpWebhookView
 from products.views import ProductDetailViewSlug
+from accounts.views import LoginView, RegisterView
 
-from django.views.generic import TemplateView
+
 
 
 
@@ -33,6 +36,11 @@ from django.views.generic import TemplateView
 urlpatterns = [
     
     path('', home_page, name='home'),
+    path('accounts/', include (('accounts.passwords.urls', 'change'))),
+    path('login/', LoginView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
+    path('register/', RegisterView.as_view(), name='register'),
+    path('accounts/', RedirectView.as_view(url="/account/")),
     path('api/cart/', cart_detail_api_view, name='api-cart'),
     path('contact/', contact_page, name='contact'),
     path('about/', about_page, name='about'),
@@ -42,11 +50,15 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('products/', include (('products.urls', 'products' ))),
     path('settings/email/', MarketingPreferenceUpdateView.as_view(), name='marketing-pref'),
+    path('settings/', RedirectView.as_view(url="/accounts")),
     path('webhooks/mailchimp/', MarketingPreferenceUpdateView.as_view(), name='webhooks-mailchimp'),
     path('search/', include (('search.urls', 'search' ))),
-    path('cart/', include (('carts.urls', 'carts' ))),
-    path('accounts/', include (('accounts.urls', 'accounts' ))),
+    path('cart/', include (('carts.urls', 'carts' ))), 
+   
+    path('account/', include (('accounts.urls', 'accounts' ))),
     path('addresses/', include (('addresses.urls', 'addresses' ))),
+    path('orders/', include (('orders.urls', 'orders' ))),
+   
 ]
 
 
