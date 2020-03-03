@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-12">
+        <h1>Product Downloads</h1>
+        <hr/>
+    </div>
+</div>
+
+<div>
+    <div>
+        <table class="table">
+            <thead>
+                <th>Product</th>
+                <th>Download</th>
+                <th>Link</th>
+                <th>Date purchased</th>
+                
+            </thead>
+            <tbody>
+                {% for object in object_list%}
+                    <tr>
+                        <td><a href="{{ object.get_absolute_url }}">{{ object.title }}</a></td>
+                        <td>coming soon</td>
+                        <td>{% for download in object.get_downloads  %}
+                                <div data-download="{{ download.display_name}}">
+                                    <a href='{{ download.get_download_url }}'>{{ download.display_name}}</a> <br/>
+                                </div>
+                            {% endfor %}</td>
+                        <td>{{ object.timestamp }}</td>
+                        
+                    </tr>
+
+                {% empty %}
+                <tr>
+                    <td colspan="3">
+                        <p class="lead">No Orders Yet.</p>
+                    </td>
+                </tr>
+                {% endfor%}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock  %}
+
+{% comment %} 
+You need to set the filename on the response:
+
+response = HttpResponse(data, content_type='application/force-download')
+response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
+return response
+You'll need to figure out a way to determine the desired filename (e..g, by storing it in the database as well for lookups).
+
+ {% endcomment %}

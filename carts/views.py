@@ -74,6 +74,9 @@ def checkout_home(request):
     guest_form = GuestForm(request=request)
     address_form = AddressForm()
     billing_address_id = request.session.get('billing_address_id', None)
+
+    shipping_address_required = not cart_obj.is_digital
+
     shipping_address_id = request.session.get('shipping_address_id', None)
 
         
@@ -124,6 +127,7 @@ def checkout_home(request):
         'address_qs': address_qs,
         'has_card': has_card,
         'publishable_key': STRIPE_PUBLISH,
+        'shipping_address_required': shipping_address_required,
     }
     template = 'carts/checkout.html'
     return render(request, template, context)

@@ -6,6 +6,8 @@ Pipfile.lock
 .vscode/
 .gitignore
 JQuery/
+media/
+protected_media/
 # Virtualenv related
 bin/
 include/

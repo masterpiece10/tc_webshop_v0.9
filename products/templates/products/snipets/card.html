@@ -10,7 +10,9 @@
   <div class="card-body">
     <h5 class="card-title">{{ instance.titel }}</h5>
     <p class="card-text">{{instance.description|truncatewords:20}}</p>
-    <a href="{{ instance.get_absolute_url }}" class="btn btn-dark">View</a>
-    {% include 'products/snipets/update_cart.html' with product=instance cart=cart %}
+    <div class="text-center">
+      <a href="{{ instance.get_absolute_url }}" class="btn btn-dark my-1">View</a>
+      {% include 'products/snipets/update_cart.html' with product=instance cart=cart %}
+    </div>
   </div>
 </div>

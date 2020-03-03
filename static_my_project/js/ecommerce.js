@@ -101,6 +101,57 @@ $(document).ready(function () {
 
     // cart add and remove logic AJAX
     var productForm = $(".form-product-ajax")
+
+
+    // digital button
+    
+    function getOwnedProduct(productId, submitSpan){
+        var actionEndpoint = '/orders/endpoint/verify/ownership'
+        var httpMethod = 'GET'
+        var data = {
+            product_id: productId,
+        }
+        var isOwner;
+        $.ajax({
+            url: actionEndpoint,
+            method: httpMethod,
+            data: data,
+            success: function (data) {
+                console.log(data)
+                if (data.owner){
+                    isOwner = true
+                    submitSpan.html('<a class="btn btn-warning" href="/library/">In Library</a>')
+                }else{
+                    isOwner = false
+                }
+            },
+            error: function(error){
+                console.log(error, "not working")
+            }
+        })
+        
+        
+        return isOwner
+    }
+
+    $.each(productForm, function(index, object){
+        var $this = $(this)
+        
+        var submitSpan = $this.find(".submit-span")
+        var productInput = $this.find("[name='product_id']")
+        var productId = productInput.attr("value")
+        var productIsDigital = productInput.attr("data-is-digital")
+        var isUser = productInput.attr("shop-user")
+        
+        
+        if (productIsDigital && isUser){
+                var isOwned = getOwnedProduct(productId, submitSpan);
+                
+        }
+    })
+
+
+
     productForm.submit(function (event) {
         event.preventDefault();
         var thisForm = $(this);

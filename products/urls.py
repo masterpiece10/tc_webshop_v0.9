@@ -1,16 +1,16 @@
-from django.urls import path
+from django.urls import path, re_path
 
 from .views import (
     ProductsListView, 
-    ProductDetailView,
-    ProductFeaturedView,
-    ProductsFeaturedListView,
     ProductDetailViewSlug,
+    ProductDownloadView
     )
 
 urlpatterns = [
     
-    path('', ProductsListView.as_view(), name='products'),
-    path('<slug>/', ProductDetailViewSlug.as_view(), name='details'),
+    path('', ProductsListView.as_view(), name='products'), 
+    re_path(r'^(?P<slug>[\w-]+)/(?P<pk>\d+)/$', ProductDownloadView.as_view(), name='download'),
+    re_path(r'^(?P<slug>[\w-]+)/$', ProductDetailViewSlug.as_view(), name='details'),
+   
     
 ]

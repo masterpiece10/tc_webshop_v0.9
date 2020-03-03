@@ -22,11 +22,13 @@ from django.urls import path, include
 from django.views.generic import TemplateView, RedirectView
 
 from .views import home_page, contact_page, about_page
+from accounts.views import LoginView, RegisterView
 from billing.views import payment_method_createview, payment_method_view
 from carts.views import cart_detail_api_view
 from marketing.views import MarketingPreferenceUpdateView, MailchimpWebhookView
+from orders.views import LibraryView
 from products.views import ProductDetailViewSlug
-from accounts.views import LoginView, RegisterView
+
 
 
 
@@ -44,7 +46,7 @@ urlpatterns = [
     path('api/cart/', cart_detail_api_view, name='api-cart'),
     path('contact/', contact_page, name='contact'),
     path('about/', about_page, name='about'),
-    path('bootstrap/', TemplateView.as_view(template_name='bootstrap/example.html')),
+    path('library/', LibraryView.as_view(), name='library'),
     path('payment/', payment_method_view, name='payment'),
     path('payment/create/', payment_method_createview, name='payment-create'),
     path('admin/', admin.site.urls),

@@ -28,7 +28,6 @@ class BillingProfileManager(models.Manager):
             obj, created = self.model.objects.get_or_create(
                                                     email=guest_email_obj.email)
         else:
-            print('no billing')
             pass
         
         return obj, created

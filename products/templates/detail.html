@@ -6,7 +6,8 @@
         <div class="col-12 col-md-6">
             <h1>{{  object.title }}</h1>
             <br/>
-            Added {{ object.timestamp|timesince }} ago
+            <p>Added {{ object.timestamp|timesince }} ago</p> 
+            {% if date_purchased %}<p> was purchased on <strong>{{ date_purchased }}</strong></p>{% endif %}
             <br/>
             {{  object.description|linebreaks }}
             {% if object.image %}

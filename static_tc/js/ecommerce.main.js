@@ -114,7 +114,7 @@ if (paymentForm.length > 1) {
                     btnLoad,
                     loadingHtml,
                     loadingClasses,
-                    2000,
+                    10000,
                     currentTimeout
                 )
                 // Send the token to your server.
@@ -194,7 +194,7 @@ function stripeTokenHandler(nextUrl, token) {
             redirectToNext(nextUrl, 1500)
         },
         error: function (error) {
-            console.log(error)
+            // console.log(error)
             $.alert({titel: "An error occured", content: "Please try your card again or use another card."})
             btnLoad.html(btnLoadDefaultHtml)
             btnLoad.removeClass('class', btnLoadDefaultClasses)
