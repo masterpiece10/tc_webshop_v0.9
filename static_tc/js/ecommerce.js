@@ -105,31 +105,33 @@ $(document).ready(function () {
 
     // digital button
     
-    function getOwnedProduct(productId){
+    function getOwnedProduct(productId, submitSpan){
         var actionEndpoint = '/orders/endpoint/verify/ownership'
         var httpMethod = 'GET'
         var data = {
-            "product_id": productId,
+            product_id: productId,
         }
+        var isOwner;
         $.ajax({
             url: actionEndpoint,
             method: httpMethod,
-            data: formData,
+            data: data,
             success: function (data) {
+                console.log(data)
                 if (data.owner){
-                    return true
+                    isOwner = true
+                    submitSpan.html('<a class="btn btn-warning" href="/library/">In Library</a>')
                 }else{
-                    return false
+                    isOwner = false
                 }
             },
             error: function(error){
-                console.log("not working")
+                console.log(error, "not working")
             }
         })
-        if (productId == 5){
-            return true
-        }
-        return false
+        
+        
+        return isOwner
     }
 
     $.each(productForm, function(index, object){
@@ -143,10 +145,8 @@ $(document).ready(function () {
         
         
         if (productIsDigital && isUser){
-                var isOwned = getOwnedProduct(productId);
-                if (isOwned){
-                submitSpan.html('<a href="/library/">In Library</a>')
-                }
+                var isOwned = getOwnedProduct(productId, submitSpan);
+                
         }
     })
 

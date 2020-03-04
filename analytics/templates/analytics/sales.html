@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row my-4">
+    <div class="col-12">
+        <h1><strong>Sales Report</strong></h1>
+        <hr/>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-4">
+        <h3><strong>Today's Sales</strong></h3>
+        <hr/>
+        <p><strong>Recent</strong> total: {{ today.recent_data.total__sum }}</p>
+        <p>Average Item Price {{ today.recent_cart_data.cart__product__price__avg }} in {{ today.recent_cart_data.cart__product__count }} sold items</p>
+        <ol>
+        {% for order in today.recent|slice:":5"  %}
+            <li>
+            <span>Order Date:   {{ order.updated|date }}</span><br/>
+            <span>Order Number: {{ order.order_id }}: </span><br/>
+            <span>${{ order.total }}</span>
+            </li>
+        {% endfor %}
+        </ol>
+        <hr/><h3><strong>Last Week</strong></h3>
+        <hr/>
+        <p><strong>Last Week</strong> total: {{ this_week.recent_data.total__sum }}</p>
+        <p>Average Item Price {{ this_week.recent_cart_data.cart__product__price__avg }} in {{ this_week.recent_cart_data.cart__product__count }} sold items</p>
+        
+        <hr/>
+        
+        <ol>
+        {% for order in this_week.recent|slice:":5"  %}
+            <li>
+            <span>Order Date:   {{ order.updated|date }}</span><br/>
+            <span>Order Number: {{ order.order_id }}: </span><br/>
+            <span>${{ order.total }}</span>
+            </li>
+        {% endfor %}
+        </ol>
+    </div>
+
+    <div class="col">    
+        <canvas class="tc-render-chart" id="thisWeekSales" width="400" height="400" data-type="week"></canvas>
+    </div>
+</div>
+ 
+<hr/>
+<div class="row">
+ <div class="col-12">
+        <h1><strong>Last Four Weeks Sales</strong></h1>
+        <hr/>
+    </div>
+    <div class="col">
+        <p><strong>Recent</strong> total: {{ last_four_weeks.recent_data.total__sum }}</p>
+        <p>Average Item Price {{ last_four_weeks.recent_cart_data.cart__product__price__avg }} in {{ last_four_weeks.recent_cart_data.cart__product__count }} sold items</p>
+
+    </div>
+    <div class="col">    
+        <canvas class="tc-render-chart" id="fourWeekSales" width="400" height="400" data-type="4weeks"></canvas>
+    </div>
+</div>
+
+
+
+{% endblock  %}

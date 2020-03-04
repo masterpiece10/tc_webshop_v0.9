@@ -23,6 +23,7 @@ from django.views.generic import TemplateView, RedirectView
 
 from .views import home_page, contact_page, about_page
 from accounts.views import LoginView, RegisterView
+from analytics.views import SalesView, SalesAjaxView
 from billing.views import payment_method_createview, payment_method_view
 from carts.views import cart_detail_api_view
 from marketing.views import MarketingPreferenceUpdateView, MailchimpWebhookView
@@ -39,6 +40,8 @@ urlpatterns = [
     
     path('', home_page, name='home'),
     path('accounts/', include (('accounts.passwords.urls', 'change'))),
+    path('analytics/sales', SalesView.as_view(), name='analytics-sales'),
+    path('analytics/sales/data/', SalesAjaxView.as_view(), name='analytics-sales-data'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('register/', RegisterView.as_view(), name='register'),

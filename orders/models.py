@@ -1,13 +1,17 @@
 import math
+from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.db import models
+from django.db.models import Sum, Avg, Count
 from django.db.models.signals import pre_save, post_save
 from django.urls import reverse
+from django.utils import timezone
 
 from carts.models import Cart
 from ecommerce.utils import unique_order_id_generator
 
+from analytics.utilis import get_last_month_data, get_month_data_range
 from addresses.models import Address
 from billing.models import BillingProfile
 from products.models import Product
@@ -21,6 +25,60 @@ ORDER_STATUS_CHOICES= (
 
 )
 class OrderManagerQuerySet(models.query.QuerySet):
+    def recent(self):
+        return self.order_by("-updated", "-timestamp")
+
+    def by_date(self):
+        now = timezone.now() - timedelta(days=13)
+        return self.filter(updated__day__gte=now.day)
+
+    def get_breakdown_data(self):
+        recent = self.recent().not_refunded()
+        recent_data = recent.totals_data()
+        recent_cart_data = recent.cart_data()
+        shipped = recent.not_refunded().by_status(status='shipped')
+        shipped_data = shipped.totals_data()
+        paid = recent.by_status(status='paid')
+        paid_data = paid.totals_data()
+        paid_cart_data = paid.cart_data()
+        data = {
+            'recent': recent,
+            'recent_data': recent_data,
+            'recent_cart_data': recent_cart_data,
+            'shipped': shipped,
+            'shipped_data': shipped_data,
+            'paid': paid,
+            'paid_data': paid_data,
+            'paid_cart_data': paid_cart_data,
+        }
+        return data
+
+    def by_week_range(self, weeks_ago=1, number_of_weeks=1):
+        if number_of_weeks > weeks_ago:
+            number_of_weeks = weeks_ago
+        days_ago_start = weeks_ago * 7
+        days_ago_end = days_ago_start - number_of_weeks * 7
+        start_date = timezone.now() - timedelta(days=days_ago_start)
+        end_date = timezone.now() - timedelta(days=days_ago_end)
+        return self.by_range(start_date=start_date, end_date=end_date)
+
+    def by_range(self, start_date, end_date=None):
+        if end_date is None:
+            return self.filter(updated__gte=start_date)
+        return self.filter(updated__gte=start_date).filter(updated__lte=end_date)
+
+    def by_status(self, status='shipped'):
+        return self.filter(status=status)
+
+    def totals_data(self):
+        return self.aggregate(Sum("total"), Avg("total"))
+
+    def cart_data(self):
+        return self.aggregate(Avg("cart__product__price"), Count("cart__product"))
+
+    def not_refunded(self):
+        return self.exclude(status='refunded')
+
     def by_request(self, request):
         my_profile, created = BillingProfile.objects.new_or_get(request)
         return self.filter(billing_profile=my_profile)

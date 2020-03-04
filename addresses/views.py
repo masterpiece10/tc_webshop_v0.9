@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.utils.http import is_safe_url
+from django.views.generic import UpdateView
 
 from .forms import AddressForm
 from .models import Address
@@ -58,3 +59,13 @@ def checkout_address_reuse_view(request):
                     return redirect(redirect_path)
 
     return redirect("carts:checkout")
+
+
+class AddressUpdateView(UpdateView):
+    template_name = 'addresses/address-update.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(AddressUpdateView).get_context_data(*args, **kwargs)
+        context["test"] = "test" 
+        return context
+    
