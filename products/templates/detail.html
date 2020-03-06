@@ -7,19 +7,17 @@
             <h1>{{  object.title }}</h1>
             <br/>
             <p>Added {{ object.timestamp|timesince }} ago</p> 
-            {% if date_purchased %}<p> was purchased on <strong>{{ date_purchased }}</strong></p>{% endif %}
+            {% if date_purchased %}<p> was purchased on <strong>{{ date_purchased|date }}</strong></p>{% endif %}
             <br/>
             {{  object.description|linebreaks }}
             {% if object.image %}
-            <div class="col-sm-3 col-12">
+            <div class="col-8">
                 <img src="{{ object.image.url }}" class="img-fluid">
             </div>
 {% endif %}
 </div>
-    <div class="col-12 col-md-6">
+<div class="col-12 col-md-6">
     {% include 'products/snipets/update_cart.html' with product=object cart=cart %}
-
-    
 </div>
 
 {% endblock  %}

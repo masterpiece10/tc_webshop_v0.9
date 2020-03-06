@@ -2,13 +2,15 @@
 <div class="card" style="width: 18rem;">
 <a href="{{ instance.get_absolute_url }}">
 {% if instance.image %}
-    <img src="{{instance.image.url}}" class="card-img-top" alt="{{ instance.titel }}">
+  <div class="view overlay zoom">
+    <img src="{{instance.image.url}}" class="card-img-top img-fluid" alt="{{ instance.title }}">
+  </div>
 {% else %}
-  <img src="{% static 'img/placeholder.png' %}" class="card-img-top" alt="{{ instance.titel }}">
+  <img src="{% static 'img/placeholder.png' %}" class="card-img-top" alt="{{ instance.title }}">
 {% endif %}
 </a>
   <div class="card-body">
-    <h5 class="card-title">{{ instance.titel }}</h5>
+    <h5 class="card-title">{{ instance.title }}</h5>
     <p class="card-text">{{instance.description|truncatewords:20}}</p>
     <div class="text-center">
       <a href="{{ instance.get_absolute_url }}" class="btn btn-dark my-1">View</a>

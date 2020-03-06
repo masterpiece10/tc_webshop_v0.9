@@ -1,0 +1,14 @@
+{% load static %}
+<div class="col-6">
+  <div class="card" >
+    <div class="card-body">
+      <h5 class="card-title">{% if instance.nickname %}{{ instance.nickname }}{% else %}{{ instance.city}}{% endif %}</h5>
+      <p class="card-text">Your {{ instance.address_type|capfirst }} address</p>
+      <p class="card-text">{{ instance.get_short_address|linebreaks }}</p>
+      <div class="text-center">
+        <a href="{{ instance.get_absolute_url }}" class="btn btn-dark my-1">Edit</a>
+        
+      </div>
+    </div>
+  </div>
+</div>

@@ -5,7 +5,7 @@ from django.contrib import admin
 from .models import BillingProfile, Card, Charge
 
 class BillingProfileAdmin(admin.ModelAdmin):
-    list_display = ["id", "user", "email",]
+    list_display = ["email", "id", "user", ]
 
     class Meta:
         model = BillingProfile

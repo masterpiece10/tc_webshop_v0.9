@@ -1,8 +1,9 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.utils.http import is_safe_url
-from django.views.generic import UpdateView
+from django.views.generic import UpdateView, View, ListView, CreateView
 
-from .forms import AddressForm
+from .forms import AddressForm, AddressChangeForm
 from .models import Address
 from billing.models import BillingProfile
 # Create your views here.
@@ -61,11 +62,34 @@ def checkout_address_reuse_view(request):
     return redirect("carts:checkout")
 
 
-class AddressUpdateView(UpdateView):
+class AddressUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'addresses/address-update.html'
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(AddressUpdateView).get_context_data(*args, **kwargs)
-        context["test"] = "test" 
-        return context
+    form_class = AddressChangeForm
+    success_url = '/addresses'
     
+    def get_queryset(self):
+        request = self.request
+        billing_profile, billing_profile_created = BillingProfile.objects.new_or_get(request)
+        return Address.objects.filter(billing_profile=billing_profile)
+
+    
+class AddressListView(LoginRequiredMixin, ListView):
+    template_name = 'addresses/home.html'
+
+    def get_queryset(self):
+        request = self.request
+        billing_profile, created = BillingProfile.objects.new_or_get(request)
+        return Address.objects.filter(billing_profile=billing_profile)
+
+class AddressCreateView(LoginRequiredMixin, CreateView):
+    template_name = "addresses/address-update.html"
+    form_class = AddressForm
+    success_url = "/addresses"
+
+    def form_valid(self, form):
+        request = self.request
+        billing_profile, billing_profile_created = BillingProfile.objects. new_or_get(request)
+        instance = form.save(commit=False)
+        instance.billing_profile = billing_profile
+        instance.save()
+        return super(AddressCreateView, self).form_valid(form)
