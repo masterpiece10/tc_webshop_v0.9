@@ -16,6 +16,7 @@ from orders.models import Order
 
 class SalesAjaxView(View):
     def get(self, request, *args, **kwargs):
+        request.session['cart'] = True
         data = {}
         if request.user.is_staff:
             qs = Order.objects.all().by_week_range(weeks_ago=5, number_of_weeks=5)
@@ -62,6 +63,7 @@ class SalesView(LoginRequiredMixin, TemplateView):
     template_name = 'analytics/sales.html'
 
     def dispatch(self, request, *args, **kwargs):
+        self.request.session['cart'] = True
         user = self.request.user
         if not user.is_staff:
             return render(self.request, "400.html", {})
@@ -73,7 +75,6 @@ class SalesView(LoginRequiredMixin, TemplateView):
         #
         # date range for qs
         #
-        
         qs = Order.objects.all() #.by_week_range(weeks_ago=10, number_of_weeks=10 )
         #
         #
@@ -81,6 +82,5 @@ class SalesView(LoginRequiredMixin, TemplateView):
         context["today"] = qs.by_range(start_date=timezone.now().date()).get_breakdown_data()
         context["this_week"] = qs.by_week_range(weeks_ago=1, number_of_weeks=1).get_breakdown_data()
         context["last_four_weeks"] = qs.by_week_range(weeks_ago=5, number_of_weeks=5).get_breakdown_data()
-        print(context["last_four_weeks"])
         return context
     

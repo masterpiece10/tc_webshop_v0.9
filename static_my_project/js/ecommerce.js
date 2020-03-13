@@ -117,7 +117,6 @@ $(document).ready(function () {
             method: httpMethod,
             data: data,
             success: function (data) {
-                console.log(data)
                 if (data.owner){
                     isOwner = true
                     submitSpan.html('<a class="btn btn-warning" href="/library/">In Library</a>')
@@ -152,62 +151,71 @@ $(document).ready(function () {
 
 
 
-    productForm.submit(function (event) {
-        event.preventDefault();
-        var thisForm = $(this);
-        //var actionEndpoint = thisForm.attr("action");
-        var actionEndpoint = thisForm.attr("data-endpoint");
-        var httpMethod = thisForm.attr("method");
-        var formData = thisForm.serialize();
+    // productForm.submit(function (event) {
+    //     event.preventDefault();
+    //     var thisForm = $(this);
+    //     //var actionEndpoint = thisForm.attr("action");
+    //     var actionEndpoint = thisForm.attr("data-endpoint");
+    //     var httpMethod = thisForm.attr("method");
+    //     var formData = thisForm.serializeArray();
+    //     var qty2 = thisForm.find("qty")
+    //     var qty = $("quantity").attr("qty") 
+        
+        
+    //     if (qty == 0){
+    //         formData.push({ name: 'qty', value: qty })
+    //     } else {
+    //         formData.push({ name: 'qty', value: qty })
+    //     }
+    //     var currentUrl = window.location.href
 
+    //     $.ajax({
+    //         url: actionEndpoint,
+    //         method: httpMethod,
+    //         data: formData,
+    //         success: function (data) {
+    //             var submitSpan = thisForm.find(".submit-span")
+    //             if (data.added) {
+    //                 submitSpan.html('<button type="submit" class="btn btn-danger"<quantity qty="0"></quantity>Remove from Cart</button>')
+    //             } else {
+    //                 submitSpan.html('<button type="submit" class="btn btn-success"><quantity qty="1"></quantity>add to cart</button>')
+    //             }
+    //             var navbarCount = $(".navbar-cart-count")
+    //             navbarCount.text(data.cartItemCount)
+    //             var currentPath = window.location.href
+    //             if (currentPath.indexOf("cart") != -1) {
+    //                 refreshCart()
+    //             } else if (currentPath.indexOf("products") != -1) {
+    //                 window.location.href = currentUrl
+    //             }
 
-        $.ajax({
-            url: actionEndpoint,
-            method: httpMethod,
-            data: formData,
-            success: function (data) {
-                var submitSpan = thisForm.find(".submit-span")
-                if (data.added) {
-                    submitSpan.html('<button type="submit" class="btn btn-danger">Remove from Cart</button>')
-                } else {
-                    submitSpan.html('<button type="submit" class="btn btn-success">add to cart</button>')
-                }
-                var navbarCount = $(".navbar-cart-count")
-                navbarCount.text(data.cartItemCount)
-                var currentPath = window.location.href
-                if (currentPath.indexOf("cart") != -1) {
-                    refreshCart()
-                }
+    //         },
+    //         error: function (errorData) {
+    //             $.alert({
+    //                 title: "Oops!",
+    //                 content: "An error occured",
+    //                 theme: "modern",
+    //             })
 
-            },
-            error: function (errorData) {
-                $.alert({
-                    title: "Oops!",
-                    content: "An error occured",
-                    theme: "modern",
-                })
+    //         }
 
-            }
-
-        })
-    })
+    //     })
+    // })
     function refreshCart() {
         var cartTable = $(".cart-table");
         var cartBody = cartTable.find(".cart-body");
         var productsRows = cartBody.find(".cart-products")
         var currentUrl = window.location.href
 
+        var cartItemId = productInput.attr("cartitemId")
         var refreshCartUrl = "/api/cart/";
         var refreshCartMethod = "GET";
         var data = {};
-        console.log("before Ajax call")
         $.ajax({
             url: refreshCartUrl,
             method: refreshCartMethod,
             data: data,
             success: function (data) {
-                console.log("success refresh")
-                console.log(data)
                 var hiddenCartItemRemoveForm = $(".cart-item-remove-form")
                 if (data.products.length > 0) {
                     productsRows.html(" ")
@@ -216,7 +224,7 @@ $(document).ready(function () {
                         var newCartItemRemove = hiddenCartItemRemoveForm.clone()
                         newCartItemRemove.css("display", "block")
                         newCartItemRemove.find(".cart-item-product-id").val(data.id)
-                        cartBody.prepend("<tr><th scope='row'>" + i + "</th><td><a href='" + value.url + "'>" + value.name + "</a></td><td>" + value.price + "</td><td>" + newCartItemRemove.html() + "</td></tr>")
+                        cartBody.prepend("<tr><th scope='row'>" + i + "</th><td>" + value.name + "</td><td>" + value.quantity + "</td><td>" + value.price + "</td><td>" + newCartItemRemove.html() + "</td></tr>")
                         i--
                     })
 

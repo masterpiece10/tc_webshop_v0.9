@@ -9,6 +9,7 @@ from billing.models import BillingProfile
 class OrderListView(LoginRequiredMixin, ListView):
     
     def get_queryset(self):
+        self.request.session['cart'] = False
         qs = Order.objects.by_request(self.request).not_created()
         return qs
 
@@ -17,6 +18,7 @@ class LibraryView(LoginRequiredMixin, ListView):
     
     
     def get_queryset(self):
+        self.request.session['cart'] = False
         qs = ProductPurchase.objects.products_by_request(self.request) # by_request(self.request).digital()
         
         return qs
@@ -25,23 +27,21 @@ class LibraryView(LoginRequiredMixin, ListView):
     #     # Call the base implementation first to get a context
     #     context = super(LibraryView, self).get_context_data(**kwargs)
     #     # add the timestamp from the order for the product
-    #     #
-    #     print(self)
-    #     qs = Order.objects.by_request(self.request)\
-    #                 .filter(
-    #                 order_id = self.kwargs.get('order_id')
-    #             )
-    #     print(context)
-    #     print(qs)
+    #     qs = Order.objects.by_request(self.request)#\
+    #             #     .filter(
+    #             #     order_id = self.kwargs.get('order_id')
+    #             # )
     #     # order_id = Order.get_order_date(qs.order_id)
-        
+    #     print(qs)
     #     context['date_purchased'] = "found it"
+    #     # print(context)
     #     return context
 
 class OrderDetailView(LoginRequiredMixin, DetailView):
     template_name = 'orders/details.html'
 
     def get_object(self):
+        self.request.session['cart'] = False
         qs = Order.objects.by_request(self.request)\
                     .filter(
                     order_id = self.kwargs.get('order_id')
@@ -53,6 +53,7 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
 
 class VerifyOwbership(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
+        self.request.session['cart'] = False
         if request.is_ajax:
             data = request.GET
             product_id = data.get('product_id')

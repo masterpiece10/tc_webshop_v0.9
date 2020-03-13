@@ -1,0 +1,38 @@
+<div style="border: 1px color:grey;background-color:#f2f2f2;">
+<h5 class="text-center">Your Cart </h5>
+<table class="table cart-table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Product Name</th>
+      <th scope="col">Qty</th>
+    </tr>
+  </thead>
+  <tbody class="cart-body">
+
+  {% for item in cart.cartitem_set.all  %}
+    <tr class="cart-products">
+      <th scope="row">{{ forloop.counter }}</th>
+      <td><a href"{{ item.product.get_absolute_url }}">{{ item.product.title }}</a></td>
+      <td>{{ item.quantity }}</td>
+    </tr>
+    {% endfor %}
+    
+    <tr>
+      <td colspan="1"></td>
+      <td><b>Subtotal: </b><span class="cart-subtotal">{{ cart.subtotal }}</span></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td colspan="1"></td>
+      <td><b>Total: </b><span class="cart-total">{{ cart.total }}</span></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td colspan="1"></td>
+      <td><a class="btn btn-success" href="{% url 'carts:checkout' %}">Checkout</a></td>
+      <td></td>
+    </tr>    
+  </tbody>
+</table>
+</div>

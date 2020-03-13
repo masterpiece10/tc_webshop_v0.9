@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.utils.http import is_safe_url
@@ -9,6 +10,7 @@ from billing.models import BillingProfile
 # Create your views here.
 
 def checkout_address_create_view(request):
+    request.session['cart'] = False
     form = AddressForm(request.POST or None)
     context = {
         'form': form,
@@ -27,9 +29,8 @@ def checkout_address_create_view(request):
             instance.save()
 
             request.session[address_type + "_address_id"] = instance.id
-            print(address_type + "_address_id")
         else:
-            print("error here")
+            messages.error(request, "No billing profile found. Please contact support for help.")
             return redirect("carts:checkout")
 
         if is_safe_url(redirect_path, request.get_host()):
@@ -39,6 +40,7 @@ def checkout_address_create_view(request):
 
 
 def checkout_address_reuse_view(request):
+    request.session['cart'] = False
     if request.user.is_authenticated:
             
         context = {}
@@ -54,7 +56,6 @@ def checkout_address_reuse_view(request):
                 qs = Address.objects.filter(billing_profile=billing_profile, id=shipping_address)
                 if qs.exists():
                     request.session[address_type + "_address_id"] = shipping_address
-                    print(address_type + "_address_id")
 
                 if is_safe_url(redirect_path, request.get_host()):
                     return redirect(redirect_path)
@@ -68,6 +69,7 @@ class AddressUpdateView(LoginRequiredMixin, UpdateView):
     success_url = '/addresses'
     
     def get_queryset(self):
+        self.request.session['cart'] = False
         request = self.request
         billing_profile, billing_profile_created = BillingProfile.objects.new_or_get(request)
         return Address.objects.filter(billing_profile=billing_profile)
@@ -77,6 +79,7 @@ class AddressListView(LoginRequiredMixin, ListView):
     template_name = 'addresses/home.html'
 
     def get_queryset(self):
+        self.request.session['cart'] = False
         request = self.request
         billing_profile, created = BillingProfile.objects.new_or_get(request)
         return Address.objects.filter(billing_profile=billing_profile)
@@ -87,6 +90,7 @@ class AddressCreateView(LoginRequiredMixin, CreateView):
     success_url = "/addresses"
 
     def form_valid(self, form):
+        self.request.session['cart'] = False
         request = self.request
         billing_profile, billing_profile_created = BillingProfile.objects. new_or_get(request)
         instance = form.save(commit=False)

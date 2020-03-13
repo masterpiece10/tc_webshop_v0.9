@@ -139,7 +139,6 @@ post_save.connect(new_card_post_save_receiver, sender=Card)
 
 class ChargeManager(models.Manager):
     def do(self, billing_profile, order_obj, card=None):
-        print(order_obj)
         card_obj = card
         if card_obj is None:
             cards = billing_profile.card_set.filter(default=True)

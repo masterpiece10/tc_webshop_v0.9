@@ -1,9 +1,10 @@
 {% load static %}
 <div class="card" style="width: 18rem;">
 <a href="{{ instance.get_absolute_url }}">
-{% if instance.image %}
+{% if instance.productimage_set.is_featured %}
+
   <div class="view overlay zoom">
-    <img src="{{instance.image.url}}" class="card-img-top img-fluid" alt="{{ instance.title }}">
+    <img src="{{instance.productimage_set.is_featured.first.image.url}}" class="card-img-top img-fluid" style="max-width: 250px;max-height: 250px;" alt="{{ instance.title }}">
   </div>
 {% else %}
   <img src="{% static 'img/placeholder.png' %}" class="card-img-top" alt="{{ instance.title }}">
@@ -12,9 +13,11 @@
   <div class="card-body">
     <h5 class="card-title">{{ instance.title }}</h5>
     <p class="card-text">{{instance.description|truncatewords:20}}</p>
-    <div class="text-center">
+    <div class="text-center"> 
+    <h3 class="mx-1">HKD {{ instance.price}} </h3>
       <a href="{{ instance.get_absolute_url }}" class="btn btn-dark my-1">View</a>
-      {% include 'products/snipets/update_cart.html' with product=instance cart=cart %}
+     
+      {% include 'products/snipets/update_cart.html' with product=instance cart=cart in_cart=in_cart %}
     </div>
   </div>
-</div>
+</div> 

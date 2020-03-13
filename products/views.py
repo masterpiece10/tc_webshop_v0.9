@@ -8,7 +8,7 @@ from django.shortcuts import render, get_object_or_404, Http404, HttpResponse, r
 
 from .models import Product, ProductFile
 from analytics.mixins import ObjectViewedMixin
-from carts.models import Cart
+from carts.models import Cart, CartItem
 from orders.models import ProductPurchase,Order
 
 import os
@@ -20,6 +20,7 @@ class ProductsFeaturedListView(ListView):
     template_name = "list.html"
 
     def get_context_data(self, *args, **kwargs):
+        self.request.session['cart'] = False
         context = super(ProductsFeaturedListView, self).get_context_data(*args, **kwargs)
         return context
 
@@ -28,6 +29,7 @@ class ProductFeaturedView(ObjectViewedMixin, DetailView):
     template_name = "detail.html"
 
     def get_context_data(self, *args, **kwargs):
+        self.request.session['cart'] = False
         context = super(ProductFeaturedView, self).get_context_data(*args, **kwargs)
 
         return context
@@ -49,40 +51,35 @@ class UserProductsHistoryView(LoginRequiredMixin, ListView):
 class ProductsListView(ListView):
     queryset = Product.objects.all()
     template_name = "list.html"
+    
 
     def get_context_data(self, *args, **kwargs):
+        self.request.session['cart'] = False
+        prod_qs = Product.objects.all()
         context = super(ProductsListView, self).get_context_data(*args, **kwargs)
         cart_obj, new_obj = Cart.objects.new_or_get(self.request)
+        
+        # cart_item_object, new_cart_item = CartItem.objects.filter(cart=cart_obj)
+        in_cart = []
+        for product in prod_qs:
+            for item in cart_obj.cartitem_set.all():
+                if product == item.product:
+                    in_cart.append(product)
+        
         context['cart'] = cart_obj
+        context['in_cart'] = in_cart
         return context
 
     def get_queryset(self, *args, **kwargs):
         request = self.request
         return Product.objects.all()
 
-# class ProductDetailView(ObjectViewedMixin, DetailView):
-    
-#     queryset = Product.objects.all()
-#     template_name = "detail.html"
-
-#     def get_context_data(self, *args, **kwargs):
-#         context = super(ProductDetailView, self).get_context_data(*args, **kwargs)
-#         return context
-
-#     def get_object(self, *args, **kwargs):
-#         request = self.request
-#         pk = self.kwargs.get('pk')
-#         instance = Product.objects.get_by_id(pk)
-#         if instance is None:
-#             raise Http404("Product doesn't exist!")
-
-#         return instance
-
 class ProductDetailViewSlug(ObjectViewedMixin, DetailView):
     queryset = Product.objects.all()
     template_name = "detail.html"
 
     def get_context_data(self, *args, **kwargs):
+        self.request.session['cart'] = False
         user = self.request.user
         context = super(ProductDetailViewSlug, self).get_context_data(*args, **kwargs)
         cart_obj, new_obj = Cart.objects.new_or_get(self.request)
@@ -93,7 +90,12 @@ class ProductDetailViewSlug(ObjectViewedMixin, DetailView):
                 purchased_qs = ProductPurchase.objects.by_request(self.request)
                 order_qs =  Order.objects.by_request(self.request).not_created()
                 order = order_qs.first()
-                context['date_purchased'] = order.timestamp
+                purchased = purchased_qs.first()
+                try:
+                    purchase_date = purchased.timestamp
+                    context['date_purchased'] = purchase_date
+                except:
+                    pass
             
             
         return context
@@ -105,7 +107,8 @@ class ProductDetailViewSlug(ObjectViewedMixin, DetailView):
         try:
             instance = get_object_or_404(Product, slug=slug, active=True)
         except Product.DoesNotExist:
-            raise Http404("Not found ...")
+            messages.error(request, "Product not found. Please chose something else.")
+            raise Http404("Product not found")
         except Product.MultipleObjectsReturned:
             instance = Product.objects.get(slug=slug, avtive=True)
         except:
@@ -117,6 +120,7 @@ class ProductDetailViewSlug(ObjectViewedMixin, DetailView):
 
 class ProductDownloadView(View):
     def get(self, request, *args, **kwargs):
+        self.request.session['cart'] = False
         slug = kwargs.get('slug')
         pk = kwargs.get('pk')
         can_download = False

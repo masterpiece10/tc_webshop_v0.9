@@ -17,6 +17,8 @@ from billing.models import BillingProfile
 from products.models import Product
 # Create your models here.
 
+User = settings.AUTH_USER_MODEL
+
 ORDER_STATUS_CHOICES= (
     ('created', 'Created'),
     ('paid', 'Paid'),
@@ -74,7 +76,7 @@ class OrderManagerQuerySet(models.query.QuerySet):
         return self.aggregate(Sum("total"), Avg("total"))
 
     def cart_data(self):
-        return self.aggregate(Avg("cart__product__price"), Count("cart__product"))
+        return self.aggregate(Avg("cart__cartitem__product__price"), Count("cart__cartitem__product"))
 
     def not_refunded(self):
         return self.exclude(status='refunded')
@@ -170,10 +172,10 @@ class Order(models.Model):
         return False
     
     def update_purchases(self):
-        for p in self.cart.product.all():
+        for p in self.cart.cartitem_set.all():
             obj, created = ProductPurchase.objects.get_or_create(
                             order_id = self.order_id,
-                            product = p,
+                            product = p.product,
                             billing_profile = self.billing_profile,
                             )
             # obj.refunded = False
@@ -266,4 +268,16 @@ class  ProductPurchase(models.Model):
     objects = ProductPurchaseManager()
 
     def __str__(self):
-        return self.product.title 
+        return self.product.title
+    
+    def get_purchase_date(self):
+        return self.timestamp
+
+class OrderItem(models.Model):
+    user        = models.ForeignKey(User, on_delete=models.CASCADE)
+    ordered     = models.BooleanField(default=False)
+    item        = models.ForeignKey(Product, null=True, blank=True, on_delete=models.SET_NULL)
+    quantity    = models.IntegerField(default=1)
+
+    def __str__(self):
+        return str(self.title)

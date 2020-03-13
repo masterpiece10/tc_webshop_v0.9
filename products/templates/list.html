@@ -1,14 +1,13 @@
 {% extends 'base.html' %}
 {% comment %} {{ object_list }} {% endcomment %}
 {% block content %}
-
     <div class="row">
         <div class="col-12">
             <hr/>
         </div>
             {% for obj in object_list  %}
             <div class="col my-2">
-                {% include 'products/snipets/card.html' with instance=obj %}
+                {% include 'products/snipets/card.html' with instance=obj cart=cart in_cart=in_cart %}
             {% if forloop.counter|divisibleby:3 %}
             </div>
         </div>

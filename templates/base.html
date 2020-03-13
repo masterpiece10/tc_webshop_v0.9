@@ -16,26 +16,26 @@
   {% include 'base/navbar.html' with brand_name='TC eCommerce' %}
     <div class="container-fluid my-2">
       <div class="row">
-        <div class="col-lg-2 col-med-0 col-sm-0 d-none d-sm-block container-fluid" id="ad-div" style="position: fixed; bottom: 20%; left: 0;">
+        <div class="col-2   d-none d-lg-block " id="ad-div" style="position: fixed; bottom: 20%; left: 0;">
           {% include 'ad/ad.html' %}
         </div>
         <div class="col-lg-2">
         
         </div>
-          <div class="col-lg-8 mx-auto my-4">
+          <div class="col-8  my-4">
             <div class="container">
             
             <br/>
               {% if messages %}
                 {% for message in messages %}
-                  <div class="alert alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}success{% endif %} messages" role="alert" style="padding:0px;margin-bottom: 5px">
+                  <div class="alert alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}warning{% else %}success{% endif %} messages" role="alert" style="padding:0px;margin-bottom: 5px">
         
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="padding: 0px; margin: 0px">
                         <span aria-hidden="true">&times;</span>
                     </button>
                     <div class="container" style="padding: 0px;">
                             
-                        <strong>Ooops! </strong>{{ message|safe }}
+                        {{ message|safe }}
                             
                     </div>
                 </div>
@@ -47,8 +47,11 @@
               {% endblock %}
             </div>
           </div>
-        <div class="col-lg-2">
-
+        <div class="col-2  container-fluid d-none d-lg-block" id="ad-div" style="position: fixed; top: 15%; right: 0;">
+        
+          {% if request.session.cart_items and not request.session.cart %}
+            {% include 'base/side-cart.html' %}
+          {% endif %}
         </div>
       </div>
     </div>

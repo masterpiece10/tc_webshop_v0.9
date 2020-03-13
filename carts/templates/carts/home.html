@@ -4,7 +4,7 @@
 
 <h1 class="text-center"> Cart </h1>
 
-{% if cart.product.count == 0 %}
+{% if cart.items.count == 0 %}
 <p class="lead "><h2 class="text-center">Your cart is empty</h2></p>
 {% else %}
 
@@ -13,33 +13,35 @@
     <tr>
       <th scope="col">#</th>
       <th scope="col">Product Name</th>
+      <th scope="col">Qty</th>
       <th scope="col">Product Price</th>
       <th scope="col">Delete</th>
     </tr>
   </thead>
   <tbody class="cart-body">
-  
-  {% for item in cart.product.all  %}
+
+  {% for item in cart.cartitem_set.all  %}
     <tr class="cart-products">
       <th scope="row">{{ forloop.counter }}</th>
-      <td><a href"{{ item.get_absolute_url }}">{{ item.title }}</a></td>
-      <td>{{ item.price }}</td>
-      <td>{% include 'carts/snippets/remove-product.html' with product_id=item.id cart=cart %}</td>
+      <td><a href"{{ item.product.get_absolute_url }}">{{ item.product.title }}</a><br/>{% for var in item.variation.all  %}<li>{{ var.category|capfirst }}: {{ var.title|capfirst }}</li>{% endfor %}</td>
+      <td>{{ item.quantity }}</td>
+      <td>{{ item.product.price }}</td>
+      <td>{% include 'carts/snippets/remove-product.html' with product_id=item.product.id cart=cart item_id=item.id %}</td>
     </tr>
     {% endfor %}
     
     <tr>
-      <td colspan="2"></td>
+      <td colspan="3"></td>
       <td><b>Subtotal: </b><span class="cart-subtotal">{{ cart.subtotal }}</span></td>
       <td></td>
     </tr>
     <tr>
-      <td colspan="2"></td>
+      <td colspan="3"></td>
       <td><b>Total: </b><span class="cart-total">{{ cart.total }}</span></td>
       <td></td>
     </tr>
     <tr>
-      <td colspan="2"></td>
+      <td colspan="3"></td>
       <td><a class="btn btn-success" href="{% url 'carts:checkout' %}">Checkout</a></td>
       <td></td>
     </tr>    

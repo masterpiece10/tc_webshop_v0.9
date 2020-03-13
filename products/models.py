@@ -61,7 +61,7 @@ class Product(models.Model):
     slug            = models.SlugField(blank=True, unique=True)
     description     = models.TextField()
     price           = models.DecimalField(decimal_places=2, max_digits=20, default=1.00)
-    image           = models.ImageField(upload_to=upload_image_path, null=True, blank=True)
+    #image           = models.ForeignKey('ProductImage', null=True, blank=True, on_delete=models.SET_NULL)
     featured        = models.BooleanField(default=False)
     active          = models.BooleanField(default=True)
     timestamp       = models.DateTimeField(auto_now_add=True)
@@ -83,6 +83,9 @@ class Product(models.Model):
     def get_downloads(self):
         qs = self.productfile_set.all()
         return qs
+
+    def get_images(self):
+        return self.productimage_set.all()
 
 
 def product_pre_save_receiver(sender, instance, *args, **kwargs):
@@ -134,3 +137,70 @@ class ProductFile(models.Model):
     def get_download_url(self):
         return reverse("products:download", kwargs={"slug": self.product.slug, "pk": self.pk})
 
+class ProductImageQuerySet(models.query.QuerySet):
+    def active(self):
+        return self.filter(active=True)
+
+    def featured(self):
+        return self.filter(featured=True)
+
+
+class ProductImageManager(models.Manager):
+    def all(self):
+        return self.get_queryset().active()
+
+    def get_queryset(self):
+        return ProductImageQuerySet(self.model, using=self._db)
+
+    def is_featured(self):
+        return self.get_queryset().featured()
+
+class ProductImage(models.Model):
+    product     = models.ForeignKey(Product, null=True, on_delete=models.CASCADE)
+    image       = models.ImageField(upload_to=upload_image_path, null=True, blank=True)
+    featured    = models.BooleanField(default=False)
+    thumbnail   = models.BooleanField(default=False)
+    active      = models.BooleanField(default=True)
+    updated     = models.DateTimeField(auto_now=True, auto_now_add=False)
+    timestamp   = models.DateTimeField(auto_now_add=True, auto_now=False)
+
+    objects=ProductImageManager()
+
+    def __str__(self):
+        return str(self.product.title)
+    
+    @property
+    def display_name(self):
+        og_name = get_filename(self.file.name)
+        if self.name:
+            return self.name 
+        return og_name
+
+VAR_CATEGORIES = (
+    ('size', 'size'),
+    ('color', 'color'),
+)
+
+class VariationManager(models.Manager):
+    def all(self):
+        return super(VariationManager, self).filter(active=True)
+
+    def colors(self):
+        return self.all().filter(category='color')
+
+    def sizes(self):
+        return self.all().filter(category='size')
+
+class Variation(models.Model):
+    product     = models.ForeignKey(Product, on_delete=models.CASCADE)
+    category    = models.CharField(max_length=50, choices=VAR_CATEGORIES, default='size')
+    title       = models.CharField(max_length=120)
+    image       = models.ForeignKey(ProductImage, null=True, blank=True, on_delete=models.CASCADE)
+    price       = models.DecimalField(max_digits=65, decimal_places=2, null=True, blank=True)
+    active      = models.BooleanField(default=True)
+    updated     = models.DateTimeField(auto_now=True, auto_now_add=False)
+    timestamp   = models.DateTimeField(auto_now_add=True, auto_now=False)
+
+    objects=VariationManager()
+    def __str__(self):
+        return str(self.product.title) + " | " + str(self.title)

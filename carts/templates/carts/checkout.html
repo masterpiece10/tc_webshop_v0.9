@@ -26,6 +26,7 @@
     Shipping Address selection and input
 -->
 {% else %}
+sipping required: {{ shipping_address_required }} {{object.shipping_address}}
     {% if not object.shipping_address and shipping_address_required %}
         <div class="row">
             <div class="col-12">
@@ -72,7 +73,7 @@
                 <div class="stripe-payment-form" data-token="{{ publishable_key }}" data-next-url='{{ request.build_absolute_uri }}' data-btn-titel="Add Payment Method"></div>
             {% else %}       
                 <h1> Finalize Checkout </h1>
-                <p>Cart Items: {% for product in object.cart.product.all %}{{ product }}{% if not forloop.last  %}, {% endif %}{% endfor %}</p>
+                <p>Cart Items: {% for product in object.cart.cartitem_set.all %}{{ product.product }}{% if not forloop.last  %}, {% endif %}{% endfor %}</p>
                 <p>Shipping Address: {{ object.shipping_address.get_address }}</p>
                 <p>Billing Address: {{ object.billing_address.get_address }}</p>
                 <p>Payment Method: {{ object.billing_profile.default_card }} (<a href="{{ billing_profile.get_payment_method_url }}?next={{ request.build_absolute_uri }}"><small>change</small></a>)</p>

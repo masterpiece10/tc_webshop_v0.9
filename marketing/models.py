@@ -26,9 +26,6 @@ class MarketingPreference(models.Model):
 def marketing_pref_update_receiver(sender, instance, created, *args, **kwargs):
     if created:
         status_code, response_data = Mailchimp().add_email(instance.user.email)
-        print(status_code)
-        print(response_data)
-        
         
 
 post_save.connect(marketing_pref_update_receiver, sender=MarketingPreference)
@@ -55,8 +52,6 @@ def marketing_pref_update_receiver(sender, instance, *args, **kwargs):
         status_code, response_data = Mailchimp().add_email(instance.user.email)
         if status_code == 400 and "permanently deleted" in response_data['detail']:
             status_code, response_data = Mailchimp().code_400_subscribe(instance.user.email)
-            print(status_code)
-            print(response_data)
             instance.subscribed = False
             instance.mailchimp_subscribed = False
             instance.code_400 = True

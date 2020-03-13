@@ -15,6 +15,7 @@ from .forms import RegisterForm, LoginForm, GuestForm, ReactivateEmailForm, User
 from .models import GuestEmail, EmailActivation
 from .signals import user_logged_in
 from billing.models import BillingProfile
+from carts.models import Cart
 from ecommerce.mixins import NextUrlMixin, RequestFormAttachMixin
 
 # Create your views here.
@@ -23,6 +24,7 @@ from ecommerce.mixins import NextUrlMixin, RequestFormAttachMixin
 class AccountHomeVIew(LoginRequiredMixin, DetailView):
     template_name = "accounts/home.html"
     def get_object(self):
+        self.request.session['cart'] = True
         return self.request.user
 
 class AccountEmailActivateView(FormMixin, View):
@@ -31,6 +33,7 @@ class AccountEmailActivateView(FormMixin, View):
     template = 'registration/activation-error.html'
     key = None
     def get(self, request, key=None, *args, **kwargs):
+        self.request.session['cart'] = True
         self.key= key
         if key is not None:
             qs = EmailActivation.objects.filter(key__iexact=key)
@@ -73,8 +76,6 @@ class AccountEmailActivateView(FormMixin, View):
         messages.success(request, msg)
         email = form.cleaned_data.get('email')
         obj = EmailActivation.objects.email_exists(email).first()
-        print(email)
-        print(obj)
         user = obj.user 
         new_activation = EmailActivation.objects.create(user=user, email=email)
         new_activation.send_activation_email()
@@ -98,6 +99,14 @@ class GuestRegisterView(NextUrlMixin, RequestFormAttachMixin, CreateView):
     def form_invalid(self):
         return redirect("account/register/")
 
+    def get_context_data(self, **kwargs):
+        context = super(GuestRegisterView).get_context_data(**kwargs)
+        cart_id = self.request.session.get("cart_id") or None
+        if cart_id is not None:
+            context["cart"] = Cart.objects.get(id=cart_id) 
+        return context
+    
+
 
 class LoginView(RequestFormAttachMixin, NextUrlMixin, FormView):
     form_class = LoginForm
@@ -109,36 +118,6 @@ class LoginView(RequestFormAttachMixin, NextUrlMixin, FormView):
         next_path = self.get_next_url()
         return redirect(next_path)
        
-# def login_page(request):
-#     form = LoginForm(request.POST or None)
-#     template = "accounts/login.html"
-#     context = {
-#         'title': "Login Page",
-#         'content': "Please input your credentials",
-#         'form': form,
-#     }
-#     next_ = request.GET.get('next')
-#     next_post = request.POST.get('next')
-#     redirect_path = next_ or next_post or None
-#     if form.is_valid():
-#         username = form.cleaned_data.get("username")
-#         password = form.cleaned_data.get("password")
-#         user = authenticate(request, username=username, password=password)
-#         if user is not None:
-#             login(request, user)
-#             try:
-#                 del request.session.get['guest_email_id']
-#             except:
-#                 print('could not delete guest_email_id from session')
-#                 pass
-#             if is_safe_url(redirect_path, request.get_host()):
-#                 return redirect(redirect_path)
-#             else:
-#                 return redirect("/")
-#         else:
-#             return redirect("/")
-
-#     return render(request, template, context)
 
 
 class RegisterView(CreateView):
@@ -146,17 +125,26 @@ class RegisterView(CreateView):
     template_name = "accounts/register.html"
     success_url = "/"
 
+    def get_context_data(self, *args, **kwargs):
+        self.request.session['cart'] = False
+        context = super(RegisterView, self).get_context_data(*args, **kwargs)
+        return context
+
 class UserDetailUpdateView(LoginRequiredMixin, UpdateView):
     form_class = UserDetailChangeForm
     template_name = 'accounts/detail-update-form.html'
     
 
     def get_object(self):
+        self.request.session['cart'] = False
         return self.request.user
     
     def get_context_data(self, *args, **kwargs):
         context = super(UserDetailUpdateView, self).get_context_data(*args, **kwargs)
         context['title'] = 'Change Your Account Details'
+        cart_id = self.request.session.get("cart_id") or None
+        if cart_id is not None:
+            context["cart"] = Cart.objects.get(id=cart_id) 
         return context
     
     def get_success_url(self):

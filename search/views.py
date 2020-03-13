@@ -16,6 +16,7 @@ class SearchProductView(ListView):
     #     return context
 
     def get_queryset(self, *args, **kwargs):
+        self.request.session['cart'] = False
         request = self.request
         method_dict = request.GET
         q = request.GET.get('q', None)

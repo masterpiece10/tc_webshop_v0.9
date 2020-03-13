@@ -1,10 +1,46 @@
-<form class="form-product-ajax" method="POST" action="{% url 'carts:update' %}" class="form-inline" data-endpoint="{% url 'carts:update' %}" >{% csrf_token %}
-   <input type="hidden" name="product_id" value="{{ product.id }}" {% if product.is_digital %}data-is-digital="true"{% endif %} {% if request.user.is_authenticated %}shop-user="YES"{% endif %} >
+<form class="form form-product-ajax" method="POST" action="{% url 'carts:update' %}" class="form-inline" data-endpoint="{% url 'carts:update' %}" >{% csrf_token %}
+   <input type="hidden"  name="product_id" value="{{ product.id }}" {% if product.is_digital %}data-is-digital="true"{% endif %} {% if request.user.is_authenticated %}shop-user="YES"{% endif %} >
        <span class="submit-span" {% if product.is_digital %}data-is-digital="true"{% endif %}>
-            {% if product in cart.product.all %}
+            {% comment %} {% if product in in_cart %}
+                <input type="hidden" name="qty" value="0"/>
+                <input type="hidden"  name="cartitemId" value="{{in_cart.id}}"/>{{in_cart.id}}
                 <button type="submit" class="btn btn-danger">Remove from Cart</button>
-            {% else %}
-                <button type="submit" class="btn btn-success">add to cart</button>
-            {% endif %}
-        </span>
+            {% else %} {% endcomment %}
+                    <button type="submit"  class="btn btn-success my-1">add to cart</button><br/>
+                      <label for="qty">Qty:</label>
+  <select id="qty" name="qty">
+    <option value="1">1</option>
+    {% if not product.is_digital %}
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+    {% endif %}
+  </select>
+  {% if not product.is_digital %}
+    {% if product.variation_set.all %}
+      {% if product.variation_set.colors %}
+        <select id="color" name="color">
+          {% for color in product.variation_set.colors %}
+            <option value="{{ color.id }}">{{ color.title|capfirst }}</option>
+          {% endfor %}
+        </select>
+      {% endif %}
+        {% if product.variation_set.sizes %}
+          <select id="size" name="size">
+            {% for size in product.variation_set.sizes %}
+              <option value="{{ size.id }}">{{ size.title|capfirst }}</option>
+            {% endfor %}
+          </select>
+      {% endif %} 
+    {% endif %}
+ {% endif %} 
+                   <!-- <input  class="form input my-1" size="3" name="qty" type="number" value="1"/> -->
+            {% comment %} {% endif %} {% endcomment %}
+        </span> 
 </form>

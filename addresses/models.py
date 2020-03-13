@@ -50,7 +50,6 @@ class Address(models.Model):
         if self.nickname:
             for_name = f"{self.nickname} | {for_name}"
         context = f"{for_name}\n{self.address_line_1}, {self.city}"
-        print(context)
         return context
 
     def get_absolute_url(self):

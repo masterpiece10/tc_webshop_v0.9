@@ -4,7 +4,7 @@ from .views import (
     cart_home,
     cart_update,
     checkout_home,
-    checkout_done_view
+    checkout_done_view,
     )
 
 from billing.views import payment_method_view, payment_method_createview

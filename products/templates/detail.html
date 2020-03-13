@@ -3,22 +3,51 @@
 {% block content %}
 
     <div class="row">
-        <div class="col-12 col-md-6">
-            <h1>{{  object.title }}</h1>
-            <br/>
-            <p>Added {{ object.timestamp|timesince }} ago</p> 
-            {% if date_purchased %}<p> was purchased on <strong>{{ date_purchased|date }}</strong></p>{% endif %}
-            <br/>
-            {{  object.description|linebreaks }}
-            {% if object.image %}
-            <div class="col-8">
-                <img src="{{ object.image.url }}" class="img-fluid">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-md-8">
+                    <h1>{{  object.title }}</h1>
+                    <br/>
+                    <p>Added {{ object.timestamp|timesince }} ago</p> 
+                    {% if date_purchased %}<p> was purchased on <strong>{{ date_purchased|date }}</strong></p>{% endif %}
+                    <br/>
+                </div>
+                <div class="col-md-4">
+                    {% include 'products/snipets/update_cart.html' with product=object cart=cart %}
+                </div>
             </div>
-{% endif %}
+                <div class="row">
+                    <div class="col-md-8">
+                    <h5 class="my-1">Description</h5>
+                    <br/>
+                     {{  object.description|linebreaks }}
+                    </div>
+                    {% if object.productfile_set.all %}
+                        <div class="col-md-4 rounded pull-right" style="background:#F3F3F3;">
+                        <h5 class="my-1">File Downloads</h5>
+                        <br/>
+                            {% for download in object.productfile_set.all  %}
+                                <div data-download="{{ download.display_name}}">
+                                    <a href="{{ download.get_download_url }}"><li>{{ download.display_name}}</li></a> 
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+            <div class="container">
+              <div class="row">
+                    {% for img in object.productimage_set.all  %}
+                        <div class"col-md-3 my-1 mx-1" >
+                            <img class="img-fluid m-2" style="max-width: 250px;max-height: 250px;" src="{{ img.image.url }}" />
+                        </div>
+                    {% endfor %}
+              </div>
+            </div>
+            
+
 </div>
-<div class="col-12 col-md-6">
-    {% include 'products/snipets/update_cart.html' with product=object cart=cart %}
-</div>
+
 
 {% endblock  %}
 
