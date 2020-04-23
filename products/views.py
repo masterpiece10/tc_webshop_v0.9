@@ -7,6 +7,7 @@ from django.shortcuts import render, get_object_or_404, Http404, HttpResponse, r
 
 
 from .models import Product, ProductFile
+from ads.models import Ads
 from analytics.mixins import ObjectViewedMixin
 from carts.models import Cart, CartItem
 from orders.models import ProductPurchase,Order
@@ -114,6 +115,51 @@ class ProductDetailViewSlug(ObjectViewedMixin, DetailView):
         except:
             return Http404("ahhhmm hmmmm")
 
+        return instance
+
+class ProductDetailViewAdd(ObjectViewedMixin, DetailView):
+    queryset = Product.objects.all()
+    template_name = "detail.html"
+
+    def get_context_data(self, *args, **kwargs):
+        self.request.session['cart'] = False
+        user = self.request.user
+        context = super(ProductDetailViewAdd, self).get_context_data(*args, **kwargs)
+        cart_obj, new_obj = Cart.objects.new_or_get(self.request)
+        context['cart'] = cart_obj
+        product_obj = context['product']
+        if user.is_authenticated:
+            if product_obj.is_digital:
+                purchased_qs = ProductPurchase.objects.by_request(self.request)
+                order_qs =  Order.objects.by_request(self.request).not_created()
+                order = order_qs.first()
+                purchased = purchased_qs.first()
+                try:
+                    purchase_date = purchased.timestamp
+                    context['date_purchased'] = purchase_date
+                except:
+                    pass
+            
+            
+        return context
+
+    def get_object(self, *args, **kwargs):
+        request = self.request
+        slug = self.kwargs.get('slug')
+        
+        try:
+            instance = get_object_or_404(Product, slug=slug, active=True)
+        except Product.DoesNotExist:
+            messages.error(request, "Product not found. Please chose something else.")
+            raise Http404("Product not found")
+        except Product.MultipleObjectsReturned:
+            instance = Product.objects.get(slug=slug, avtive=True)
+        except:
+            return Http404("ahhhmm hmmmm")
+        
+        ads_obj = Ads.objects.get(product_id=instance.id)
+        ads_obj.clicks += 1
+        ads_obj.save()
         return instance
 
 

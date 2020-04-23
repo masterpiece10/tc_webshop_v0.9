@@ -1,11 +1,16 @@
 $(document).ready(function () {
+    //-------------------------------------------
     // Contact Form Handler
+    //-------------------------------------------
+
     var contactForm = $(".contact-form")
     var contactFormMethod = contactForm.attr("method")
     var contactFormEndpoint = contactForm.attr("action")
 
-
+    //-------------------------------------------
     // search button spinner
+    //-------------------------------------------
+    
     function displayContactSubmiting(submitBtn, defaultTxt, doSubmit) {
         if (doSubmit) {
             submitBtn.addClass("disabled")
@@ -63,9 +68,92 @@ $(document).ready(function () {
 
     })
 
+    //----------------------------------------------- 
+    // live database search field
+    //-----------------------------------------------
 
+    // Get the <datalist> and <input> elements.
+    var dataList = document.getElementById('json-datalist');
+    var templateList = document.getElementById('template')
+    var input = document.getElementById('home-search');
+    
 
+    // Create a new XMLHttpRequest.
+    var request = new XMLHttpRequest();
+
+    // Handle state changes for the request.
+    request.onreadystatechange = function (response) {
+            
+        if (request.readyState === 4) {
+            if (request.status === 200) {
+                // ajax call to get products
+               
+                $.ajax({
+                    url: '/search/ajax-search/', // django URL defined
+                    dataType: 'json',
+                    type: 'post',
+                    cache: false,
+                    success: function(data){
+                        $(data).each(function(index, value){
+                            // Create a new <option> element.
+                            var option = document.createElement('option');
+                            // Set the value using the item in the JSON array.
+                            option.text = value.fields.title;
+                            
+                            // Add the <option> element to the <datalist>.
+                            dataList.appendChild(option);
+                            templateList.appendChild(option);
+                        }
+                        )}, 
+                        error: function(erroData){
+                            console.log("error:", erroData)
+                        }
+
+                })    
+               
+
+                // Update the placeholder text.
+                input.placeholder = "..search..";
+            } else {
+                // An error occured :(
+                input.placeholder = "Couldn't load datalist options :(";
+            }
+        }
+    };
+
+   
+
+    // Update the placeholder text.
+    input.placeholder = "Loading options...";
+
+    // Set up and make the request.
+    request.open('GET', '/search/ajax-search', true);
+    request.send();
+
+    //-------------------------------------------
+    // limit the data list to 5 entries shown
+    //-------------------------------------------
+    
+    var search = document.querySelector('#home-search');
+    var results = document.querySelector('#json-datalist');
+    var templateContent = document.querySelector('#template');
+    console.log("template", templateContent)
+    console.log(results)
+    console.log(search)
+    search.addEventListener('keyup', function handler(event) {
+        while (results.children.length) results.removeChild(results.firstChild);
+        var inputVal = new RegExp(search.value.trim(), 'i');
+        var set = Array.prototype.reduce.call(templateContent.cloneNode(true).children, function searchFilter(frag, item, i) {
+            if (inputVal.test(item.textContent) && frag.children.length < 6) frag.appendChild(item);
+            return frag;
+        }, document.createDocumentFragment());
+        results.appendChild(set);
+    });
+
+    //-------------------------------------------
     // auto search function
+    //-------------------------------------------
+
     var searchForm = $(".search-form")
     var searchInput = searchForm.find("[name='q']") // find the input field in the search area using a class
     var typingTimer; // when will the first time this function triggert
@@ -98,12 +186,15 @@ $(document).ready(function () {
 
     }
 
-
+    //-------------------------------------------
     // cart add and remove logic AJAX
+    //-------------------------------------------
     var productForm = $(".form-product-ajax")
 
 
+    //-------------------------------------------
     // digital button
+    //-------------------------------------------
     
     function getOwnedProduct(productId, submitSpan){
         var actionEndpoint = '/orders/endpoint/verify/ownership'
@@ -150,57 +241,10 @@ $(document).ready(function () {
     })
 
 
-
-    // productForm.submit(function (event) {
-    //     event.preventDefault();
-    //     var thisForm = $(this);
-    //     //var actionEndpoint = thisForm.attr("action");
-    //     var actionEndpoint = thisForm.attr("data-endpoint");
-    //     var httpMethod = thisForm.attr("method");
-    //     var formData = thisForm.serializeArray();
-    //     var qty2 = thisForm.find("qty")
-    //     var qty = $("quantity").attr("qty") 
-        
-        
-    //     if (qty == 0){
-    //         formData.push({ name: 'qty', value: qty })
-    //     } else {
-    //         formData.push({ name: 'qty', value: qty })
-    //     }
-    //     var currentUrl = window.location.href
-
-    //     $.ajax({
-    //         url: actionEndpoint,
-    //         method: httpMethod,
-    //         data: formData,
-    //         success: function (data) {
-    //             var submitSpan = thisForm.find(".submit-span")
-    //             if (data.added) {
-    //                 submitSpan.html('<button type="submit" class="btn btn-danger"<quantity qty="0"></quantity>Remove from Cart</button>')
-    //             } else {
-    //                 submitSpan.html('<button type="submit" class="btn btn-success"><quantity qty="1"></quantity>add to cart</button>')
-    //             }
-    //             var navbarCount = $(".navbar-cart-count")
-    //             navbarCount.text(data.cartItemCount)
-    //             var currentPath = window.location.href
-    //             if (currentPath.indexOf("cart") != -1) {
-    //                 refreshCart()
-    //             } else if (currentPath.indexOf("products") != -1) {
-    //                 window.location.href = currentUrl
-    //             }
-
-    //         },
-    //         error: function (errorData) {
-    //             $.alert({
-    //                 title: "Oops!",
-    //                 content: "An error occured",
-    //                 theme: "modern",
-    //             })
-
-    //         }
-
-    //     })
-    // })
+    //-------------------------------------------
+    // referesh cart function
+    //-------------------------------------------
+    
     function refreshCart() {
         var cartTable = $(".cart-table");
         var cartBody = cartTable.find(".cart-body");

@@ -16,8 +16,7 @@
     <div class="text-center"> 
     <h3 class="mx-1">HKD {{ instance.price}} </h3>
       <a href="{{ instance.get_absolute_url }}" class="btn btn-dark my-1">View</a>
-     
-      {% include 'products/snipets/update_cart.html' with product=instance cart=cart in_cart=in_cart %}
+      {% comment %} {% include 'products/snipets/update_cart.html' with product=instance cart=cart in_cart=in_cart %} {% endcomment %}
     </div>
   </div>
 </div> 

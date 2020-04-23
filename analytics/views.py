@@ -4,10 +4,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum, Avg, Count
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
-from django.views.generic import TemplateView, View
+from django.views.generic import TemplateView, View, ListView
 from django.utils import timezone
 
 from .utilis import get_last_month_data, get_month_data_range
+from ads.models import Ads
 from orders.models import Order
 
 
@@ -72,15 +73,22 @@ class SalesView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(SalesView, self).get_context_data(*args, **kwargs)
-        #
-        # date range for qs
-        #
         qs = Order.objects.all() #.by_week_range(weeks_ago=10, number_of_weeks=10 )
-        #
-        #
-        #
         context["today"] = qs.by_range(start_date=timezone.now().date()).get_breakdown_data()
         context["this_week"] = qs.by_week_range(weeks_ago=1, number_of_weeks=1).get_breakdown_data()
         context["last_four_weeks"] = qs.by_week_range(weeks_ago=5, number_of_weeks=5).get_breakdown_data()
         return context
+    
+class AdsStatisticsView(LoginRequiredMixin, TemplateView):
+    model = Ads
+    template_name = "analytics/ads.html"
+
+    def get_context_data(self, **kwargs):
+        self.request.session['cart'] = True
+        context = super(AdsStatisticsView, self).get_context_data(**kwargs)
+        ads_obj = Ads.objects.all()
+        context["object_list"] = ads_obj
+        context["title"] = "Ads statistics" 
+        return context
+    
     

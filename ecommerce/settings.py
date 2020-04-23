@@ -27,7 +27,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG')
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.32']
+ALLOWED_HOSTS = ['*']
 
 
 
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'accounts',
     'addresses',
+    'ads',
     'analytics',
     'billing',
     'carts',
@@ -71,12 +72,17 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    #'BrokenLinkEmailMiddleware',
+    # 'BrokenLinkEmailMiddleware',
+    'ads.middleware.ADSMiddleware',
+    
 ]
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 ROOT_URLCONF = 'ecommerce.urls'
 

@@ -38,9 +38,20 @@
             <div class="container">
               <div class="row">
                     {% for img in object.productimage_set.all  %}
-                        <div class"col-md-3 my-1 mx-1" >
-                            <img class="img-fluid m-2" style="max-width: 250px;max-height: 250px;" src="{{ img.image.url }}" />
-                        </div>
+                        {% if img.featured %}
+                            <div class"col-md-3 my-1 mx-1" >
+                                <img class="img-fluid m-2" style="max-width: 400px;max-height: 400px;" src="{{ img.image.url }}" />
+                            </div>
+                        {% endif %}  
+                    {% endfor %}
+                </div>
+                <div class="row">
+                    {% for img in object.productimage_set.all  %}
+                        {% if not img.featured %}
+                            <div class"col-md-3 my-1 mx-1" >
+                                <img class="img-fluid m-2" style="max-width: 200px;max-height: 200px;" src="{{ img.image.url }}" />
+                            </div>
+                        {% endif %}
                     {% endfor %}
               </div>
             </div>

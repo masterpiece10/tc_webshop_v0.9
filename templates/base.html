@@ -8,27 +8,29 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-     <title>Some BS or rather</title>
+     <title>Treasure China eCommerce</title>
      {% include 'base/css.html' %}
   </head>
   <body>
 
   {% include 'base/navbar.html' with brand_name='TC eCommerce' %}
-    <div class="container-fluid my-2">
+    <div class="container">
       <div class="row">
-        <div class="col-2   d-none d-lg-block " id="ad-div" style="position: fixed; bottom: 20%; left: 0;">
-          {% include 'ad/ad.html' %}
+        <div class="col-2 d-none	d-sm-none d-md-none d-lg-block" id="ad-div" style="position: fixed; bottom: 20%; left: 0;">
+          {% if ads_obj %}
+            {% include 'ad/ad.html' %}
+          {% endif %}
         </div>
         <div class="col-lg-2">
         
         </div>
-          <div class="col-8  my-4">
+          <div class="col-8 col-sm-12 my-4">
             <div class="container">
             
             <br/>
               {% if messages %}
                 {% for message in messages %}
-                  <div class="alert alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}warning{% else %}success{% endif %} messages" role="alert" style="padding:0px;margin-bottom: 5px">
+                  <div class="alert alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}warning{% else %}success{% endif %} messages" role="alert" style="padding:0px;margin-bottom: 5px;margin-top:7px;">
         
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="padding: 0px; margin: 0px">
                         <span aria-hidden="true">&times;</span>
@@ -43,11 +45,10 @@
               {% endif %}
               <br/>
               {% block content %}
-
               {% endblock %}
             </div>
           </div>
-        <div class="col-2  container-fluid d-none d-lg-block" id="ad-div" style="position: fixed; top: 15%; right: 0;">
+        <div class="col-2 d-none	d-sm-none d-md-none d-lg-block" id="ad-div" style="position: fixed; top: 15%; right: 0;">
         
           {% if request.session.cart_items and not request.session.cart %}
             {% include 'base/side-cart.html' %}

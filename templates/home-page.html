@@ -26,7 +26,21 @@
                        
                     </div>
                 </div>
-            
+            <div class="row">
+                <div class="col-8">
+                
+                <form method="POST" autocomplete="off" action="{% url 'search:fluid-search' %}" class="form-inline my-2 my-lg-0 search-form1">{% csrf_token %}
+                    <datalist id="template">
+                    </datalist>
+                    <input name="q" id="home-search" type="datalist" list="json-datalist" placeholder="..search.." > 
+                    <datalist id="json-datalist"></datalist>
+                    {% comment %} <button class="btn btn-dark" type="submit">go!</button> {% endcomment %}
+                    </form>
+                </div>
+            </div>
+
+
+
             {% if request.user.is_authenticated %}
                 <div class="row">
                     <div class="col-sm-12 col">

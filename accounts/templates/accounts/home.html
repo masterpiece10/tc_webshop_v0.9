@@ -26,8 +26,9 @@
                 <h5 class="card-title">Billing</h5>
                 <div class="list-group">
                     <a class="list-group-item" href="{% url 'addresses:home' %}">Addresses</a>
-                    <a class="list-group-item" href="{% url 'payment-create' %}">Payment Methods</a>
+                    <a class="list-group-item" href="{% url 'payment' %}">Payment Methods</a>
                     <a class="list-group-item" href="{% url 'orders:list' %}">Orders</a>
+                    <a class="list-group-item" href="{% url 'billing:invoices' %}">Invoices</a>
                     <a class="list-group-item" href="#">Refunds</a>
                 </div>
             </div>

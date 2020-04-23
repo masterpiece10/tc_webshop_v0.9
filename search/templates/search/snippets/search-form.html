@@ -1,6 +1,6 @@
-<form method="POST" action="{% url 'search:query' %}" class="form-inline my-2 my-lg-0 search-form">{% csrf_token %}
+<form method="GET" action="{% url 'search:query' %}" class="form-inline my-2 my-lg-0 search-form">
     <div class="input-group">
-        <input class=" form-control" type="text" placeholder="Search" aria-label="Search" name="q" {% if request.GET.q %} value="{{ request.GET.q }} {% endif %}">
+        <input class=" form-control" type="text" placeholder="Search" aria-label="Search" name="q" {% if request.GET.q %} value="{{ request.GET.q }}{% endif %}">
         <span class="input-group-btn">
             <button class="btn btn-outline-success" type="submit">Search</button>
         </span>

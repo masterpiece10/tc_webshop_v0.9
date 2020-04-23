@@ -21,7 +21,7 @@ from django.contrib.auth.views import LogoutView
 from django.urls import path, include
 from django.views.generic import TemplateView, RedirectView
 
-from .views import home_page, contact_page, about_page
+from .views import home_page, contact_page, about_page, ContactPage
 from accounts.views import LoginView, RegisterView
 from analytics.views import SalesView, SalesAjaxView
 from billing.views import payment_method_createview, payment_method_view
@@ -47,7 +47,7 @@ urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
     path('accounts/', RedirectView.as_view(url="/account/")),
     path('api/cart/', cart_detail_api_view, name='api-cart'),
-    path('contact/', contact_page, name='contact'),
+    path('contact/', ContactPage.as_view(), name='contact'),
     path('about/', about_page, name='about'),
     path('library/', LibraryView.as_view(), name='library'),
     path('payment/', payment_method_view, name='payment'),
@@ -62,7 +62,9 @@ urlpatterns = [
    
     path('account/', include (('accounts.urls', 'accounts' ))),
     path('addresses/', include (('addresses.urls', 'addresses' ))),
+    path('ads/', include (('ads.urls', 'ads' ))),
     path('orders/', include (('orders.urls', 'orders' ))),
+    path('billing/', include (('billing.urls', 'billing' ))),
    
 ]
 

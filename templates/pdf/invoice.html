@@ -1,0 +1,118 @@
+
+<html>
+
+<head>
+    <title>Treasure China Webshop</title>
+    <style type="text/css">
+        @font-face {
+        font-family: 'berta';
+        src: url('/static/fonts/beth-ellen-v1-latin-regular.woff2');
+        src: local('Beth Ellen Regular'),
+                url('/static/fonts/beth-ellen-v1-latin-regular.eot?#iefix') format('embedded-opentype'),
+                url('/static/fonts/beth-ellen-v1-latin-regular.woff2') format('woff2'), 
+                url('/static/fonts/beth-ellen-v1-latin-regular.woff') format('woff'), 
+                url('/static/fonts/beth-ellen-v1-latin-regular.ttf') format('truetype'),
+                url('/static/fonts/beth-ellen-v1-latin-regular.svg#BethEllen') format('svg');
+
+        }
+
+        .invoiceF {
+            font-family: 'berta';
+            color: red;
+        }
+        body {
+            font-weight: 200;
+            font-size: 14px;
+        }
+
+        .header {
+            font-size: 20px;
+            font-weight: 100;
+            text-align: center;
+            color: #007cae;
+        }
+
+        .title {
+            font-size: 22px;
+            font-weight: 100;
+            /* text-align: right;*/
+            padding: 10px 20px 0px 20px;
+        }
+
+        .title span {
+            color: #007cae;
+        }
+
+        .details {
+            padding: 10px 20px 0px 20px;
+            text-align: left !important;
+            /*margin-left: 40%;*/
+        }
+
+        .hrItem {
+            border: none;
+            height: 1px;
+            /* Set the hr color */
+            color: #333;
+            /* old IE */
+            background-color: #fff;
+            /* Modern Browsers */
+        }
+    </style>
+   
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="col-6 mx-auto"><h2 class="header">Treasure China <span class="invoiceF">Webshop</span></h2></div>
+            </div>
+        </div>
+    </div>
+    <div class='wrapper'>
+        <div class='header'>
+            <p class='title'>Invoice #{{ slug }} </p>
+        </div>
+        <div>
+            <div class='details'>
+                Bill to: {{ customer_name }}<br />
+                Amount: {{ order.total }}<br />
+                Date: {{ order.timestamp|date }}
+                <hr class='hrItem' />
+            </div>
+        </div>
+        <div>
+            <div class='details'>
+                <table class='table'>
+                    <thead>
+                        <tr >
+                            <th bgcolor="lightgrey" width="80" align="left" >Item</th>
+                            <th bgcolor="lightgrey" width="330">Description</th>
+                            <th bgcolor="lightgrey" width="30">Qty</th>
+                            <th bgcolor="lightgrey" width="60">Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                            <tr>
+                                <td width="80" align="left" valign="top">{{ item.product.title }}</td>
+                                <td height="50" width="330" >
+                                    {{ item.product.description }}<br/>
+                                    {% for var in item.product.variation  %}
+                                    <li>{{ var }}</li>
+                                    {% endfor %}
+                                </td>
+                                <td width="30" align="center" valign="top">{{ item.quantity }}</td>
+                                <td width="60"   valign="top">{{ item.product.price }}</td>
+                            </tr>
+                        {% endfor %} 
+                    </tbody>
+                </table>
+                <hr class='hrItem' />
+            </div>
+        </div>
+</body>
+
+</html>

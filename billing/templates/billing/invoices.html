@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% include 'base/style.html' %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-8 mx-auto">
+        <h1>{{title}}</h1>
+        <hr/>
+    </div>
+</div>
+<div class="row">
+    <div class="col-8 mx-auto">
+        <span class="invoiceF">TEST </span>invetion
+        {% for inv in invoices  %}
+            <ul><a href="get_pdf?slug={{ inv }}"> {{ inv }}</a></ul>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock  %}

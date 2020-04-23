@@ -1,12 +1,25 @@
 {% comment %} {% include 'base/css.html' %}
 {% include 'base/js.html' %} {% endcomment %}
 {% load static %}
+<div class="card" style="max-width: 200px; border: none;">
+  <a href="{{ ads_obj.get_absolute_url }}">
+{% if ads_obj.productimage_set.is_featured.first.image %}
 
-<div class="card" style="width: auto; border: none;">
-  <img src="{% static 'img/placeholder.png' %}" class="card-img-top  " alt="...">
+  <div class="view overlay zoom">
+    <img src="{{ads_obj.productimage_set.is_featured.first.image.url}}" class="card-img-top img-fluid" style="max-width: 200px;max-height: 200px;" alt="{{ instance.title }}">
+  </div>
+{% else %}
+  <img src="{% static 'img/placeholder.png' %}" class="card-img-top" alt="{{ instance.title }}">
+{% endif %}
+</a>
   <div class="card-body">
-    <h5 class="card-title">Ad title here</h5>
-    <p class="card-text">Some ad related description. picture above for ref only</p>
-    <a href="#" class="btn btn-dark">Go somewhere</a>
+    <h5 class="card-title">{{ ads_obj.title }}</h5>
+    <p class="card-text">{{ads_obj.description|truncatewords:10}}</p>
+    <div class="text-center"> 
+    <h3 class="mx-1">HKD {{ ads_obj.price}} </h3>
+      <a href="{{ ads_obj.get_absolute_url }}add" class="btn btn-dark my-1">View</a>
+     
+      
+    </div>
   </div>
 </div>

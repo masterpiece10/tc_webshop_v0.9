@@ -4,11 +4,11 @@
 
 <h1 class="text-center"> Cart </h1>
 
-{% if cart.items.count == 0 %}
+{% if request.session.cart_items == 0 %}
 <p class="lead "><h2 class="text-center">Your cart is empty</h2></p>
 {% else %}
 
-<table class="table cart-table">
+<table class="table cart-table"> 
   <thead>
     <tr>
       <th scope="col">#</th>

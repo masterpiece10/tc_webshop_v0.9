@@ -49,7 +49,6 @@ class Cart(models.Model):
     @property
     def is_digital(self):
         for item in self.cartitem_set.all():
-            print(item.product, "is digital:", item.product.is_digital)
             if item.product.is_digital:
                 return False
         return True
@@ -61,7 +60,6 @@ class Cart(models.Model):
         # return True
        
 def post_save_cart_receiver(sender, instance, *args, **kwargs):
-    #print("post save cart action") 
     pass   
     
 
@@ -89,7 +87,6 @@ class CartItemQuerySet(models.query.QuerySet):
     def get_name(self, id):
         # qs = self.filter(id=id)
         
-        # print(qs[0].product)
         return self.filter(id=id)[0].product
 
     

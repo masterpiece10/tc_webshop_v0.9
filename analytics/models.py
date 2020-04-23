@@ -55,7 +55,7 @@ def object_viewed_receiver(sender, instance, request, *args, **kwargs):
     c_type = ContentType.objects.get_for_model(sender)
     ip_address = None
     try:
-        get_client_ip(request)
+        ip_address = get_client_ip(request)
     except:
         pass
     

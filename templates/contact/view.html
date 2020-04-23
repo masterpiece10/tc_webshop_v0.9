@@ -3,10 +3,9 @@
 
 {% block content %}
 
-<div class="container">
+
     <div class="row">
-        
-            <div class="col-8 mx-auto">
+            <div class="col-8 col-sm-10 col-xs-12 mx-auto">
                 <p class="text-center"><h1 class="text-center">{{ title }}</h1></p>
                 <hr/>
                 <form class="contact-form" action="{% url 'contact' %}" method="POST">{% csrf_token %}
@@ -16,6 +15,6 @@
             </div>
         </p>
     </div>
-</div>
+
 
 {% endblock  %}

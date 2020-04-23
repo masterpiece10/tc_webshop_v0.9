@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-8 mx-auto">
+        <h1 class="text-center">{{ title }}</h1>
+        <hr/>
+    </div>
+    <div class="col-8 mx-auto">
+        {% for ad in object_list  %}
+            <li>{{ ad.product }}</li><br/>
+            <p>views: {{ ad.views }} </p>
+            <p>Clicks: {{ ad.clicks }} </p>
+        {% endfor %}
+    </div>
+</div>
+
+
+
+{% endblock  %}

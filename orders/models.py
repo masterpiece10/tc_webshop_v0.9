@@ -87,6 +87,9 @@ class OrderManagerQuerySet(models.query.QuerySet):
     
     def not_created(self):
         return self.exclude(status='created')
+    
+    def paid(self):
+        return self.filter(status='paid')
 
 class OrderManager(models.Manager):
     def get_queryset(self):

@@ -22,20 +22,6 @@ class LibraryView(LoginRequiredMixin, ListView):
         qs = ProductPurchase.objects.products_by_request(self.request) # by_request(self.request).digital()
         
         return qs
-    
-    # def get_context_data(self, **kwargs):
-    #     # Call the base implementation first to get a context
-    #     context = super(LibraryView, self).get_context_data(**kwargs)
-    #     # add the timestamp from the order for the product
-    #     qs = Order.objects.by_request(self.request)#\
-    #             #     .filter(
-    #             #     order_id = self.kwargs.get('order_id')
-    #             # )
-    #     # order_id = Order.get_order_date(qs.order_id)
-    #     print(qs)
-    #     context['date_purchased'] = "found it"
-    #     # print(context)
-    #     return context
 
 class OrderDetailView(LoginRequiredMixin, DetailView):
     template_name = 'orders/details.html'
